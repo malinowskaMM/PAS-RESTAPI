@@ -1,74 +1,72 @@
 package pl.pas.hotel.repositoryImpl;
-/*
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
+import pl.pas.hotel.model.rent.Rent;
+import pl.pas.hotel.model.room.Room;
+import pl.pas.hotel.model.user.client.Client;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 @RequiredArgsConstructor
-public class RentRepository implements Repository<Rent> {
+public class RentRepository implements pl.pas.hotel.repository.RentRepository {
 
     @PersistenceContext
     private final EntityManager entityManager;
 
     @Override
-    public Rent findById(String id) {
-        return Optional.of(entityManager.find(Rent.class, UUID.fromString(id))).orElse(null);
-    }
-
-    @Override
-    public Rent save(Rent object) {
-        entityManager.persist(object);
-        return object;
-    }
-
-    @Override
-    public List<Rent> find(Predicate<Rent> predicate) {
-        final List<Rent> rents = findAll();
-        return rents.stream().filter(predicate).toList();
-    }
-
-    @Override
-    public List<Rent> findAll() {
-        final TypedQuery<Rent> query = entityManager.createQuery("SELECT c FROM Rent c", Rent.class);
-        return query.getResultList();
-    }
-
-    @Override
-    public String getReport() {
-        final StringBuilder description = new StringBuilder();
-        for (Rent r : findAll()) {
-            description.append(r.getRentInfo());
-            description.append(", ");
+    public UUID createRent(LocalDateTime beginTime, LocalDateTime endTime, Client client, Room room) {
+        if(client.isActive() && getCurrentRentsByRoom(room.getRoomId(), beginTime, endTime).isEmpty()) {
+            Rent rent = new Rent(beginTime, endTime, client, room);
+            entityManager.persist(rent);
+            return rent.getId();
         }
-        return description.toString();
+        return null;
     }
 
     @Override
-    public int getSize() {
-        return findAll().size();
+    public void removeRent(UUID id) {
+        Rent removed = getRentById(id);
+        if(removed != null) {
+            entityManager.remove(removed);
+        }
     }
 
     @Override
-    public void remove(Rent object) {
-        entityManager.remove(object);
+    public void endRent(UUID id) {
+        Rent rent = getRentById(id);
+        if(rent != null) {
+            rent.endRent();
+            entityManager.merge(rent);
+        }
     }
 
-    public List<Rent> getRentsForRoom(String roomNumber, LocalDateTime beginTime, LocalDateTime endTime) {
-        return find(
-                rent -> ((rent.getRoom().getRoomNumber().equals(roomNumber))
-                        &&
-                        ((beginTime.isAfter(rent.getBeginTime()) && beginTime.isBefore(rent.getEndTime()))
-                || (endTime.isAfter(rent.getBeginTime()) && endTime.isBefore(rent.getEndTime()))
-                || (beginTime.isEqual(rent.getBeginTime()) && endTime.isEqual(rent.getEndTime()))))
-        );
+    @Override
+    public List<Rent> getRentsByClient(UUID clientId) {
+        return getRents().stream().filter(rent -> rent.getClient().getId().equals(clientId)).toList();
     }
 
+    @Override
+    public List<Rent> getRentsByRoom(UUID roomId) {
+        return getRents().stream().filter(rent -> rent.getRoom().getRoomId().equals(roomId)).toList();
+    }
 
-}*/
+    //TO DO
+    @Override
+    public List<Rent> getCurrentRentsByRoom(UUID roomId, LocalDateTime beginTime, LocalDateTime endTime) {
+        return null;
+    }
+
+    @Override
+    public List<Rent> getRents() {
+        return entityManager.createQuery("select r from Rent r", Rent.class).getResultList();
+    }
+
+    @Override
+    public Rent getRentById(UUID id) {
+        return entityManager.find(Rent.class, id);
+    }
+}

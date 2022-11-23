@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-public class ClientManager {
+public class UserManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Slf4j.class);
     @PersistenceContext
@@ -28,7 +28,7 @@ public class ClientManager {
     private final UserRepository userRepository;
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-    public ClientManager(EntityManager entityManager) {
+    public UserManager(EntityManager entityManager) {
         this.entityManager = entityManager;
         this.userRepository = new UserRepository(entityManager);
     }

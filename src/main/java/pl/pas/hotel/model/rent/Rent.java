@@ -18,7 +18,6 @@ public class Rent extends AbstractEntity {
 
     @Id
     @NotNull
-    @Column(name = "ID")
     UUID id;
 
     @NotNull
@@ -29,11 +28,6 @@ public class Rent extends AbstractEntity {
     @Column(name = "END_TIME", nullable = false, columnDefinition = "TIMESTAMP CHECK (END_TIME > BEGIN_TIME)")
     LocalDateTime endTime;
 
-    @Column(name = "RENT_COST", nullable = false, columnDefinition = "FLOAT CHECK (RENT_COST >= 0)")
-    @PositiveOrZero
-    @NotNull
-    Double rentCost;
-
     @ManyToOne
     @JoinColumn(name = "PERSONAL_ID", nullable = false)
     Client client;
@@ -42,16 +36,15 @@ public class Rent extends AbstractEntity {
     @JoinColumn(name = "ROOM_NUMBER", nullable = false)
     Room room;
 
-    public Rent(LocalDateTime beginTime, LocalDateTime endTime, Client client, Room room, Double rentCost) {
+    public Rent(LocalDateTime beginTime, LocalDateTime endTime, Client client, Room room) {
         this.id = UUID.randomUUID();
         this.beginTime = beginTime;
         this.endTime = endTime;
         this.client = client;
         this.room = room;
-        this.rentCost = rentCost;
     }
 
-    public void changeEndTime(LocalDateTime newEndTime) {
-        endTime = newEndTime;
+    public void endRent() {
+        this.endTime = LocalDateTime.now();
     }
 }
