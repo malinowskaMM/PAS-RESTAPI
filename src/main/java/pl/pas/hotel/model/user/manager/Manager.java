@@ -12,4 +12,7 @@ public class Manager extends User {
     public Manager(String login) {
         super(true, login);
     }
+    public Manager getUser() {
+        return this;
+    }
 }

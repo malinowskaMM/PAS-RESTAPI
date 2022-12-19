@@ -1,4 +1,4 @@
-package pl.pas.hotel.repository;
+package pl.pas.hotel.repositories;
 
 
 import pl.pas.hotel.model.user.User;
@@ -20,9 +20,6 @@ public interface UserRepository {
     List<User> getUsersBy(Predicate<User> predicate);
     User modifyClient(UUID id, String firstName, String lastName, Address address);
     User getUserById(UUID id);
-    Client getClientById(UUID id);
-    Manager getManagerById(UUID id);
-    Admin getAdminById(UUID id);
     void activateUser(UUID id);
     void deactivateUser(UUID id);
 }

@@ -1,4 +1,4 @@
-package pl.pas.hotel.repository;
+package pl.pas.hotel.repositories;
 
 import pl.pas.hotel.model.room.Room;
 

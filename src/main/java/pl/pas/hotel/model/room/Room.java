@@ -14,6 +14,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@jakarta.enterprise.context.Dependent
 public class Room extends AbstractEntity {
 
     @Id

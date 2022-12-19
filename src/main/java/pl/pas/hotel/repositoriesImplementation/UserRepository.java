@@ -1,46 +1,49 @@
-package pl.pas.hotel.repositoryImpl;
+package pl.pas.hotel.repositoriesImplementation;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import lombok.RequiredArgsConstructor;
+import jakarta.enterprise.context.ApplicationScoped;
 import pl.pas.hotel.model.user.User;
 import pl.pas.hotel.model.user.admin.Admin;
 import pl.pas.hotel.model.user.client.Address;
 import pl.pas.hotel.model.user.client.Client;
 import pl.pas.hotel.model.user.manager.Manager;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-@RequiredArgsConstructor
-public class UserRepository implements pl.pas.hotel.repository.UserRepository {
+import static java.util.Collections.synchronizedList;
 
-    @PersistenceContext
-    private final EntityManager entityManager;
+@ApplicationScoped
+public class UserRepository implements pl.pas.hotel.repositories.UserRepository {
+
+    private final List<User> users = synchronizedList(new ArrayList<>());
 
     @Override
     public UUID createClient(String personalId, String firstName, String lastName, Address address, String login) {
         Client client = new Client(personalId, firstName, lastName, address, login);
-        entityManager.persist(client);
+        users.add(client);
         return client.getId();
     }
 
     @Override
     public UUID createAdmin(String login) {
         Admin admin = new Admin(login);
+        users.add(admin);
         return admin.getId();
     }
 
     @Override
     public UUID createManager(String login) {
         Manager manager = new Manager(login);
+        users.add(manager);
         return manager.getId();
     }
 
     @Override
     public List<User> getUsers() {
-        return entityManager.createQuery("select u from User u", User.class).getResultList();
+        return users.stream().toList();
     }
 
     @Override
@@ -50,12 +53,12 @@ public class UserRepository implements pl.pas.hotel.repository.UserRepository {
 
     @Override
     public User modifyClient(UUID id, String firstName, String lastName, Address address) {
-        Client client = entityManager.find(Client.class, id);
-        if(client != null) {
+        User user = getUserById(id);
+        if(user != null && user.getClass().equals(Client.class)) {
+            Client client = (Client) user;
              client.setFirstName(firstName);
              client.setLastName(lastName);
              client.setAddress(address);
-             entityManager.merge(client);
              return client;
         }
         return null;
@@ -63,22 +66,8 @@ public class UserRepository implements pl.pas.hotel.repository.UserRepository {
 
     @Override
     public User getUserById(UUID id) {
-        return entityManager.find(User.class, id);
-    }
-
-    @Override
-    public Client getClientById(UUID id) {
-        return entityManager.find(Client.class, id);
-    }
-
-    @Override
-    public Manager getManagerById(UUID id) {
-        return entityManager.find(Manager.class, id);
-    }
-
-    @Override
-    public Admin getAdminById(UUID id) {
-        return entityManager.find(Admin.class, id);
+        Optional<User> userOptional = users.stream().filter(user -> user.getId().equals(id)).findFirst();
+        return userOptional.orElse(null);
     }
 
     @Override

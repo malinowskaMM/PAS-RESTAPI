@@ -53,5 +53,8 @@ public class Client extends User {
         moneySpent += cost;
         return moneySpent;
     }
+    public Client getUser() {
+        return this;
+    }
 
 }

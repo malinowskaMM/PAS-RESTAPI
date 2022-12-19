@@ -46,4 +46,6 @@ public abstract class User extends AbstractEntity {
     public String getLogin() {
         return login;
     }
+
+    public abstract User getUser();
 }

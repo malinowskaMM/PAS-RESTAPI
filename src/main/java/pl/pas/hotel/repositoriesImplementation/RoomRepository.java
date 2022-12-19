@@ -1,30 +1,31 @@
-package pl.pas.hotel.repositoryImpl;
+package pl.pas.hotel.repositoriesImplementation;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import lombok.RequiredArgsConstructor;
+import jakarta.enterprise.context.ApplicationScoped;
 import pl.pas.hotel.model.room.Room;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-@RequiredArgsConstructor
-public class RoomRepository implements pl.pas.hotel.repository.RoomRepository {
+import static java.util.Collections.synchronizedList;
 
-    @PersistenceContext
-    private final EntityManager entityManager;
+@ApplicationScoped
+public class RoomRepository implements pl.pas.hotel.repositories.RoomRepository {
+
+    private final List<Room> rooms = synchronizedList(new ArrayList<>());
 
     @Override
     public UUID createRoom(Integer roomNumber, Double price, Integer roomCapacity) {
         Room room = new Room(roomNumber, price, roomCapacity);
-        entityManager.persist(room);
+        rooms.add(room);
         return room.getRoomId();
     }
 
     @Override
     public List<Room> getRooms() {
-        return entityManager.createQuery("select r from Room r", Room.class).getResultList();
+        return rooms.stream().toList();
     }
 
     @Override
@@ -34,12 +35,11 @@ public class RoomRepository implements pl.pas.hotel.repository.RoomRepository {
 
     @Override
     public Room modifyRoom(UUID id, Integer roomNumber, Double price, Integer roomCapacity) {
-        Room modifiedRoom = entityManager.find(Room.class, id);
+        Room modifiedRoom = getRoomById(id);
         if(modifiedRoom != null) {
             modifiedRoom.setRoomNumber(roomNumber);
             modifiedRoom.setPrice(price);
             modifiedRoom.setRoomCapacity(roomCapacity);
-            entityManager.merge(modifiedRoom);
             return modifiedRoom;
         }
         return null;
@@ -47,14 +47,15 @@ public class RoomRepository implements pl.pas.hotel.repository.RoomRepository {
 
     @Override
     public void deleteRoom(UUID id) {
-        Room removed = entityManager.find(Room.class, id);
+        Room removed = getRoomById(id);
         if(removed != null) {
-            entityManager.remove(removed);
+            rooms.remove(removed);
         }
     }
 
     @Override
     public Room getRoomById(UUID id) {
-        return entityManager.find(Room.class, id);
+        Optional<Room> roomOptional = rooms.stream().filter(room -> room.getRoomId().equals(id)).findFirst();
+        return roomOptional.orElse(null);
     }
 }

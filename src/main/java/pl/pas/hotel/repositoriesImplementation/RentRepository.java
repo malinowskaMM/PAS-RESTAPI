@@ -1,27 +1,28 @@
-package pl.pas.hotel.repositoryImpl;
+package pl.pas.hotel.repositoriesImplementation;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import lombok.RequiredArgsConstructor;
+import jakarta.enterprise.context.ApplicationScoped;
 import pl.pas.hotel.model.rent.Rent;
 import pl.pas.hotel.model.room.Room;
 import pl.pas.hotel.model.user.client.Client;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
-@RequiredArgsConstructor
-public class RentRepository implements pl.pas.hotel.repository.RentRepository {
+import static java.util.Collections.synchronizedList;
 
-    @PersistenceContext
-    private final EntityManager entityManager;
+@ApplicationScoped
+public class RentRepository implements pl.pas.hotel.repositories.RentRepository {
+
+    private final List<Rent> rents = synchronizedList(new ArrayList<>());
 
     @Override
     public UUID createRent(LocalDateTime beginTime, LocalDateTime endTime, Client client, Room room) {
         if(client.isActive() && getCurrentRentsByRoom(room.getRoomId(), beginTime, endTime).isEmpty()) {
             Rent rent = new Rent(beginTime, endTime, client, room);
-            entityManager.persist(rent);
+            rents.add(rent);
             return rent.getId();
         }
         return null;
@@ -31,7 +32,7 @@ public class RentRepository implements pl.pas.hotel.repository.RentRepository {
     public void removeRent(UUID id) {
         Rent removed = getRentById(id);
         if(removed != null) {
-            entityManager.remove(removed);
+            rents.remove(removed);
         }
     }
 
@@ -40,7 +41,6 @@ public class RentRepository implements pl.pas.hotel.repository.RentRepository {
         Rent rent = getRentById(id);
         if(rent != null) {
             rent.endRent();
-            entityManager.merge(rent);
         }
     }
 
@@ -62,11 +62,12 @@ public class RentRepository implements pl.pas.hotel.repository.RentRepository {
 
     @Override
     public List<Rent> getRents() {
-        return entityManager.createQuery("select r from Rent r", Rent.class).getResultList();
+        return rents.stream().toList();
     }
 
     @Override
     public Rent getRentById(UUID id) {
-        return entityManager.find(Rent.class, id);
+        Optional<Rent> rentOptional = rents.stream().filter(rent -> rent.getId().equals(id)).findFirst();
+        return rentOptional.orElse(null);
     }
 }

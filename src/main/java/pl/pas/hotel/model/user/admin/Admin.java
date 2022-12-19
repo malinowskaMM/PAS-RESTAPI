@@ -12,4 +12,8 @@ public class Admin extends User {
     public Admin(String login) {
         super(true, login);
     }
+
+    public Admin getUser() {
+        return this;
+    }
 }
