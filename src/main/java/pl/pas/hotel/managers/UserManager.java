@@ -116,4 +116,8 @@ public class UserManager {
         return userRepository.getUsers();
     }
 
+    public void deleteUser(UUID id) {
+        userRepository.deleteUser(id);
+    }
+
 }

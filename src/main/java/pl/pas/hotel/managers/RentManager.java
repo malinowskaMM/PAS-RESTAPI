@@ -57,5 +57,24 @@ public class RentManager {
         }
     }
 
+    public List<Rent> getRents() {
+        return rentRepository.getRents();
+    }
+
+    public List<Rent> getRentsByClientId(UUID clientId) {
+        return rentRepository.getRentsByClient(clientId);
+    }
+
+    public List<Rent> getRentsByRoomId(UUID roomId) {
+        return rentRepository.getRentsByRoom(roomId);
+    }
+
+    public Rent getRent(UUID rentId) {
+        return rentRepository.getRentById(rentId);
+    }
+
+    public void removeRent(UUID rentId) {
+        rentRepository.removeRent(rentId);
+    }
 
 }

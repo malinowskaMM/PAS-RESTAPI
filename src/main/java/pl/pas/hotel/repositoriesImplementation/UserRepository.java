@@ -85,4 +85,8 @@ public class UserRepository implements pl.pas.hotel.repositories.UserRepository 
             user.deactivate();
         }
     }
+
+    public void deleteUser(UUID id) {
+        users.remove(getUserById(id));
+    }
 }
