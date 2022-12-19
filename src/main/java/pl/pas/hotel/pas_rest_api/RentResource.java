@@ -24,6 +24,35 @@ public class RentResource {
         return Response.ok().entity(rentManager.getRents()).build();
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/room/{uuid}")
+    public Response getRentsByRoom(@PathParam("uuid") UUID roomId) {
+        return Response.ok().entity(rentManager.getRentsByRoomId(roomId)).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/client/{uuid}")
+    public Response getRentsByClient(@PathParam("uuid") UUID clientId) {
+        return Response.ok().entity(rentManager.getRentsByClientId(clientId)).build();
+    }
+
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/startDate")
+    public Response getRentsByStartDate(LocalDateTime startDate) {
+        return Response.ok().entity(rentManager.getRentsByStartDate(startDate)).build();
+    }
+
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/endDate")
+    public Response getRentsByEndDate(LocalDateTime endDate) {
+        return Response.ok().entity(rentManager.getRentsByStartDate(endDate)).build();
+    }
+
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response rentRoom(Client client, Room room, LocalDateTime beginTime, LocalDateTime endTime) {
