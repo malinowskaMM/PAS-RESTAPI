@@ -1,5 +1,7 @@
 package pl.pas.hotel.dto.user;
 
+import jakarta.json.bind.annotation.JsonbCreator;
+import jakarta.json.bind.annotation.JsonbProperty;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -11,17 +13,14 @@ public class ClientDto extends UserDto{
 
     @NotNull
     @Size(min = 11, max = 11)
-    @Column(name = "personalId", length = 11)
     private String personalId;
 
     @NotNull
     @Size(max = 35)
-    @Column(name = "firstName", nullable = false, length = 35)
     private String firstName;
 
     @NotNull
     @Size(max = 35)
-    @Column(name = "lastName", nullable = false, length = 35)
     private String lastName;
 
     @NotNull
@@ -29,10 +28,10 @@ public class ClientDto extends UserDto{
 
     @NotNull
     @PositiveOrZero
-    @Column(name = "moneySpent", nullable = false, columnDefinition = "FLOAT CHECK (MONEY_SPENT >= 0)")
     private Double moneySpent;
 
-    public ClientDto(boolean isActive, String login, String personalId, String firstName, String lastName, String address, Double moneySpent) {
+    @JsonbCreator
+    public ClientDto(@JsonbProperty("isActive")boolean isActive, @JsonbProperty("login")String login, @JsonbProperty("personalId")String personalId, @JsonbProperty("firstName")String firstName, @JsonbProperty("isActive")String lastName, @JsonbProperty("address")String address, @JsonbProperty("moneySpent")Double moneySpent) {
         super(isActive, login);
         this.personalId = personalId;
         this.firstName = firstName;

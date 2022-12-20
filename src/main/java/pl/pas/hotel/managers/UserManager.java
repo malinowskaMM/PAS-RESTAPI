@@ -33,7 +33,7 @@ public class UserManager {
         this.userRepository = userRepository;
     }
 
-    public synchronized Client registerClient(String firstName, String lastName, String personalId, Address address, String login) {
+    public synchronized Client registerClient(String firstName, String lastName, String personalId, String address, String login) {
         final Client client = new Client(personalId, firstName, lastName, address, login);
         if (validator.validate(client).size() == 0) {
                     final UUID saved = userRepository.createClient(client.getPersonalId(), client.getFirstName(), client.getLastName(), client.getAddress(), client.getLogin());
@@ -77,7 +77,7 @@ public class UserManager {
         return null;
     }
 
-    public synchronized void updateClient(UUID id, String firstName, String lastName, String personalId, Address address, String login) {
+    public synchronized void updateClient(UUID id, String firstName, String lastName, String personalId, String address, String login) {
         final Client client = (Client) userRepository.getUserById(id).getUser();
         if (client == null) {
             LOGGER.warn("Client {} does not exist in the database", id);

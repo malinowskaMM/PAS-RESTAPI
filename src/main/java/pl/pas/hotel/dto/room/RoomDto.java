@@ -14,17 +14,14 @@ import lombok.Setter;
 public class RoomDto {
 
     @Positive
-    @Column(name = "roomNumber", columnDefinition = "INTEGER CHECK (ROOM_NUMBER > 0)")
     private Integer roomNumber;
 
     @NotNull
     @PositiveOrZero
-    @Column(name = "price", nullable = false, columnDefinition = "DOUBLE PRECISION CHECK (PRICE >= 0)")
     private Double price;
 
     @NotNull
     @Positive
-    @Column(name = "roomCapacity", nullable = false, columnDefinition = "INTEGER CHECK (ROOM_CAPACITY > 0)")
     private Integer roomCapacity;
 
     @JsonbCreator

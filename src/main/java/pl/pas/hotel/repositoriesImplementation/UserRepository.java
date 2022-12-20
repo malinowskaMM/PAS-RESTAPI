@@ -20,7 +20,7 @@ public class UserRepository implements pl.pas.hotel.repositories.UserRepository 
     private final List<User> users = synchronizedList(new ArrayList<>());
 
     @Override
-    public UUID createClient(String personalId, String firstName, String lastName, Address address, String login) {
+    public UUID createClient(String personalId, String firstName, String lastName, String address, String login) {
         Client client = new Client(personalId, firstName, lastName, address, login);
         users.add(client);
         return client.getId();
@@ -51,7 +51,7 @@ public class UserRepository implements pl.pas.hotel.repositories.UserRepository 
     }
 
     @Override
-    public User modifyClient(UUID id, String firstName, String lastName, Address address) {
+    public User modifyClient(UUID id, String firstName, String lastName, String address) {
         User user = getUserById(id);
         if(user != null && user.getClass().equals(Client.class)) {
             Client client = (Client) user;
