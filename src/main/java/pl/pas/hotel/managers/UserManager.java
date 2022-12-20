@@ -2,6 +2,7 @@ package pl.pas.hotel.managers;
 
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
+import jakarta.mail.Address;
 import jakarta.persistence.RollbackException;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;

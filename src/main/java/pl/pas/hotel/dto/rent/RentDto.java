@@ -2,6 +2,8 @@ package pl.pas.hotel.dto.rent;
 
 import jakarta.json.bind.annotation.JsonbCreator;
 import jakarta.json.bind.annotation.JsonbProperty;
+import jakarta.persistence.Column;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,12 +14,24 @@ import java.util.UUID;
 @Setter
 public class RentDto {
 
+    @NotNull
+    @Size(min = 11, max = 11)
     String clientId;
 
+    @NotNull
     UUID roomUuid;
 
+    @AssertTrue
+    private boolean isEndTimeAfterBeginTime() {
+        return endTime.isAfter(beginTime);
+    }
+
+    @FutureOrPresent
+    @NotNull
     LocalDateTime beginTime;
 
+    @FutureOrPresent
+    @NotNull
     LocalDateTime endTime;
 
     @JsonbCreator
