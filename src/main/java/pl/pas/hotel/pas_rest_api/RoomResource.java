@@ -56,10 +56,11 @@ public class RoomResource {
 
     @PUT
     @Path("/{uuid}")
-    public Response updateRoom(@PathParam("uuid") UUID roomId, Room room) {
+    public Response updateRoom(@PathParam("uuid") UUID roomId, RoomDto roomDto) {
         if(roomManager.getRoomById(roomId.toString()) == null) {
             return Response.status(404).build();
         }
+        Room room = roomDtoMapper.toRoom(roomDto);
         roomManager.updateRoom(roomId, room.getRoomNumber(), room.getPrice(), room.getRoomCapacity());
         return Response.ok().build();
     }

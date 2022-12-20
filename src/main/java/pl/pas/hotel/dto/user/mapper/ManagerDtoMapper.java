@@ -7,7 +7,7 @@ import pl.pas.hotel.model.user.manager.Manager;
 @Stateless
 public class ManagerDtoMapper {
 
-    Manager toManager(ManagerDto managerDto) {
+    public Manager toManager(ManagerDto managerDto) {
         return new Manager(managerDto.getLogin());
     }
 }

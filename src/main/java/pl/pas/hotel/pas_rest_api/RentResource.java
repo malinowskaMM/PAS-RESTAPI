@@ -5,6 +5,8 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import pl.pas.hotel.dto.rent.RentDto;
+import pl.pas.hotel.dto.rent.mapper.RentDtoMapper;
 import pl.pas.hotel.managers.RentManager;
 import pl.pas.hotel.model.rent.Rent;
 import pl.pas.hotel.model.room.Room;
@@ -18,6 +20,9 @@ public class RentResource {
 
     @Inject
     private RentManager rentManager;
+
+    @Inject
+    private RentDtoMapper rentDtoMapper;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -56,9 +61,10 @@ public class RentResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response rentRoom(@Valid Client client, @Valid Room room, LocalDateTime beginTime, LocalDateTime endTime) {
-        Rent rent = rentManager.rentRoom(client, room, beginTime, endTime);
-        return Response.ok().entity(rent).build();
+    public Response rentRoom(RentDto rentDto) {
+        Rent rent = rentDtoMapper.toRent(rentDto);
+        Rent rentResult = rentManager.rentRoom(rent.getClient(), rent.getRoom(), rent.getBeginTime(), rent.getEndTime());
+        return Response.ok().entity(rentResult).build();
     }
 
     @PUT
