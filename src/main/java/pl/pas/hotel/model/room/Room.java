@@ -5,7 +5,6 @@ import pl.pas.hotel.model.abstractEntity.AbstractEntity;
 
 import java.util.UUID;
 
-@Builder
 @Getter
 public class Room extends AbstractEntity {
 

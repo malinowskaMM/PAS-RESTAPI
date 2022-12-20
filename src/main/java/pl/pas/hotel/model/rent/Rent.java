@@ -11,7 +11,6 @@ import pl.pas.hotel.model.user.client.Client;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Builder
 @Getter
 public class Rent extends AbstractEntity {
     UUID id;

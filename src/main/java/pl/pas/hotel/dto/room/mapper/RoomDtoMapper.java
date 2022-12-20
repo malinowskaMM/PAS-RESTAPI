@@ -11,11 +11,7 @@ import pl.pas.hotel.model.room.Room;
 public class RoomDtoMapper {
 
     public Room toRoom(RoomDto roomDto) {
-        return Room.builder()
-                .roomNumber(roomDto.getRoomNumber())
-                .price(roomDto.getPrice())
-                .roomCapacity(roomDto.getRoomCapacity())
-                .build();
+        return new Room(roomDto.getRoomNumber(), roomDto.getPrice(), roomDto.getRoomCapacity());
     }
 
 }

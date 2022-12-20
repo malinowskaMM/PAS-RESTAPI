@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import pl.pas.hotel.model.user.User;
 
-@Builder
 public class Manager extends User {
 
     public Manager(String login) {

@@ -3,7 +3,6 @@ package pl.pas.hotel.model.user.client;
 import lombok.*;
 import pl.pas.hotel.model.user.User;
 
-@Builder
 @Getter
 public class Client extends User {
 

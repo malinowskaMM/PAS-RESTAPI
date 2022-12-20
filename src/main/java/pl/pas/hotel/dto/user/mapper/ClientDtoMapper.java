@@ -8,13 +8,7 @@ import pl.pas.hotel.model.user.client.Client;
 public class ClientDtoMapper {
 
     public Client toClient(ClientDto clientDto) {
-        return Client.builder()
-                .personalId(clientDto.getPersonalId())
-                .firstName(clientDto.getFirstName())
-                .lastName(clientDto.getLastName())
-                .address(clientDto.getAddress())
-                .moneySpent(clientDto.getMoneySpent())
-                .build();
+        return new Client(clientDto.getPersonalId(), clientDto.getFirstName(), clientDto.getLastName(), clientDto.getAddress(), clientDto.getLogin());
 
     }
 }
