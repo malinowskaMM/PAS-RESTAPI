@@ -1,5 +1,7 @@
 package pl.pas.hotel.managers;
 
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
@@ -12,24 +14,18 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-@jakarta.enterprise.context.Dependent
+@Stateless
 public class RoomManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(Slf4j.class);
-    private final RoomRepository roomRepository;
+    @Inject
+    private RoomRepository roomRepository;
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-
-    @jakarta.inject.Inject
-    public RoomManager() {
-        this.roomRepository = new RoomRepository();
-    }
-
 
     public synchronized Room createRoom(Integer roomNumber, Double basePrice, int roomCapacity) {
         final Room room = new Room(roomNumber, basePrice, roomCapacity);
         if (validator.validate(room).isEmpty()) {
-                final UUID saved = roomRepository.createRoom(room.getRoomNumber(), room.getPrice(), room.getRoomCapacity());
-                LOGGER.debug("Room saved successfully");
-                return roomRepository.getRoomById(saved);
+            LOGGER.debug("Room saved successfully");
+            return roomRepository.createRoom(room.getRoomNumber(), room.getPrice(), room.getRoomCapacity());
         } else {
             LOGGER.warn("Room {} validation failed", room.getRoomNumber());
         }

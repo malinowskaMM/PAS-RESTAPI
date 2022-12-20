@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 
 public interface RoomRepository {
 
-    UUID createRoom(Integer roomNumber, Double price, Integer roomCapacity);
+    Room createRoom(Integer roomNumber, Double price, Integer roomCapacity);
     List<Room> getRooms();
     List<Room> getRoomsBy(Predicate<Room> predicate);
     Room modifyRoom(UUID id, Integer roomNumber, Double price, Integer roomCapacity);

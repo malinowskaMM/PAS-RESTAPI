@@ -1,6 +1,7 @@
 package pl.pas.hotel.managers;
 
 import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
@@ -21,14 +22,12 @@ import java.util.stream.Collectors;
 public class RentManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Slf4j.class);
-    private final RentRepository rentRepository;
+    @Inject
+    private RentRepository rentRepository;
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-    private final UserRepository userRepository;
 
-    public RentManager() {
-        this.rentRepository = new RentRepository();
-        this.userRepository = new UserRepository();
-    }
+    @Inject
+    private UserRepository userRepository;
 
     public Rent rentRoom(Client client, Room room, LocalDateTime beginTime, LocalDateTime endTime) {
         if (validator.validate(client).isEmpty() && validator.validate(room).isEmpty()) {

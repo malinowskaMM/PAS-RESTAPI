@@ -1,5 +1,6 @@
 package pl.pas.hotel.pas_rest_api;
 
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -12,6 +13,7 @@ import pl.pas.hotel.model.room.Room;
 
 import java.util.UUID;
 
+@RequestScoped
 @Path("/rooms")
 public class RoomResource {
 

@@ -17,10 +17,10 @@ public class RoomRepository implements pl.pas.hotel.repositories.RoomRepository 
     private final List<Room> rooms = synchronizedList(new ArrayList<>());
 
     @Override
-    public UUID createRoom(Integer roomNumber, Double price, Integer roomCapacity) {
+    public Room createRoom(Integer roomNumber, Double price, Integer roomCapacity) {
         Room room = new Room(roomNumber, price, roomCapacity);
         rooms.add(room);
-        return room.getRoomId();
+        return room;
     }
 
     @Override

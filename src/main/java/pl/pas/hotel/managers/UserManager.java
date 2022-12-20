@@ -25,13 +25,9 @@ public class UserManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Slf4j.class);
 
-    private final UserRepository userRepository;
-    private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-
     @Inject
-    public UserManager(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private UserRepository userRepository;
+    private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     public synchronized Client registerClient(String firstName, String lastName, String personalId, String address, String login) {
         final Client client = new Client(personalId, firstName, lastName, address, login);

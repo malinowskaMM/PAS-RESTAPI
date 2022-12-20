@@ -1,5 +1,6 @@
 package pl.pas.hotel.pas_rest_api;
 
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -15,6 +16,7 @@ import pl.pas.hotel.model.user.client.Client;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@RequestScoped
 @Path("/rents")
 public class RentResource {
 

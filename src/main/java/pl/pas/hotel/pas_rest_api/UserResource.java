@@ -1,5 +1,6 @@
 package pl.pas.hotel.pas_rest_api;
 
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -18,6 +19,7 @@ import pl.pas.hotel.model.user.manager.Manager;
 
 import java.util.UUID;
 
+@RequestScoped
 @Path("/users")
 public class UserResource {
 
