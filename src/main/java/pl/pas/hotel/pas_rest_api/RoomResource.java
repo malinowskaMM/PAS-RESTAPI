@@ -5,6 +5,8 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import pl.pas.hotel.dto.room.RoomDto;
+import pl.pas.hotel.dto.room.mapper.RoomDtoMapper;
 import pl.pas.hotel.managers.RoomManager;
 import pl.pas.hotel.model.room.Room;
 
@@ -16,6 +18,9 @@ public class RoomResource {
     @Inject
     private RoomManager roomManager;
 
+    @Inject
+    private RoomDtoMapper roomDtoMapper;
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRooms() {
@@ -24,9 +29,10 @@ public class RoomResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createRoom(@Valid Room room) {
-        roomManager.createRoom(room.getRoomNumber(), room.getPrice(), room.getRoomCapacity());
-        return Response.ok().entity(room).build();
+    public Response createRoom(@Valid RoomDto roomDto) {
+        Room room = roomDtoMapper.toRoom(roomDto);
+        Room result = roomManager.createRoom(room.getRoomNumber(), room.getPrice(), room.getRoomCapacity());
+        return Response.ok().entity(result).build();
     }
 
     @DELETE

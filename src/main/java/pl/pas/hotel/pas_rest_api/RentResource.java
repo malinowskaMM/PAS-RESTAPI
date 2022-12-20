@@ -1,6 +1,7 @@
 package pl.pas.hotel.pas_rest_api;
 
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -37,7 +38,7 @@ public class RentResource {
     public Response getRentsByClient(@PathParam("uuid") UUID clientId) {
         return Response.ok().entity(rentManager.getRentsByClientId(clientId)).build();
     }
-
+/*
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/startDate")
@@ -51,11 +52,11 @@ public class RentResource {
     public Response getRentsByEndDate(LocalDateTime endDate) {
         return Response.ok().entity(rentManager.getRentsByStartDate(endDate)).build();
     }
-
+*/
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response rentRoom(Client client, Room room, LocalDateTime beginTime, LocalDateTime endTime) {
+    public Response rentRoom(@Valid Client client, @Valid Room room, LocalDateTime beginTime, LocalDateTime endTime) {
         Rent rent = rentManager.rentRoom(client, room, beginTime, endTime);
         return Response.ok().entity(rent).build();
     }
