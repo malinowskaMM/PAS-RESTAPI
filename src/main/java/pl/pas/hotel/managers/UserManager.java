@@ -2,8 +2,6 @@ package pl.pas.hotel.managers;
 
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.RollbackException;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -12,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.pas.hotel.model.user.User;
 import pl.pas.hotel.model.user.admin.Admin;
-import pl.pas.hotel.model.user.client.Address;
 import pl.pas.hotel.model.user.client.Client;
 import pl.pas.hotel.model.user.manager.Manager;
 import pl.pas.hotel.repositoriesImplementation.UserRepository;

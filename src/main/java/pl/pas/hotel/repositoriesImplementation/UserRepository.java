@@ -3,7 +3,6 @@ package pl.pas.hotel.repositoriesImplementation;
 import jakarta.enterprise.context.ApplicationScoped;
 import pl.pas.hotel.model.user.User;
 import pl.pas.hotel.model.user.admin.Admin;
-import pl.pas.hotel.model.user.client.Address;
 import pl.pas.hotel.model.user.client.Client;
 import pl.pas.hotel.model.user.manager.Manager;
 

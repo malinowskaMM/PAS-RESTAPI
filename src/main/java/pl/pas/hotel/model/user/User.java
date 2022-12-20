@@ -2,8 +2,6 @@ package pl.pas.hotel.model.user;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
 import lombok.Getter;
 import pl.pas.hotel.model.abstractEntity.AbstractEntity;
 
@@ -11,7 +9,6 @@ import java.util.UUID;
 
 @Entity
 @Getter
-@Inheritance(strategy= InheritanceType.SINGLE_TABLE)
 public abstract class User extends AbstractEntity {
 
     @Id

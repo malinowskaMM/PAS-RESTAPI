@@ -2,10 +2,6 @@ package pl.pas.hotel.repositories;
 
 
 import pl.pas.hotel.model.user.User;
-import pl.pas.hotel.model.user.admin.Admin;
-import pl.pas.hotel.model.user.client.Address;
-import pl.pas.hotel.model.user.client.Client;
-import pl.pas.hotel.model.user.manager.Manager;
 
 import java.util.List;
 import java.util.UUID;
