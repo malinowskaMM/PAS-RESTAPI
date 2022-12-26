@@ -106,4 +106,11 @@ public class RoomTest {
         assertThat(response.asString()).isEqualTo("{\"price\":120.0,\"roomCapacity\":2,\"roomId\":\""+exampleUUID+"\",\"roomNumber\":1}");
     }
 
+    @Test
+    public void shouldNotGetRoomWithGivenId() {
+        RestAssured.given().contentType(ContentType.JSON).
+                when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rooms/"+"XD");
+
+    }
+
 }

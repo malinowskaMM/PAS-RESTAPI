@@ -8,6 +8,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pl.pas.hotel.dto.rent.RentDto;
 import pl.pas.hotel.dto.rent.mapper.RentDtoMapper;
+import pl.pas.hotel.exceptions.RoomWithGivenIdNotExist;
 import pl.pas.hotel.managers.RentManager;
 import pl.pas.hotel.model.rent.Rent;
 import pl.pas.hotel.model.room.Room;
@@ -63,7 +64,7 @@ public class RentResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response rentRoom(RentDto rentDto) {
+    public Response rentRoom(RentDto rentDto) throws RoomWithGivenIdNotExist {
         Rent rent = rentDtoMapper.toRent(rentDto);
         Rent rentResult = rentManager.rentRoom(rent.getClient(), rent.getRoom(), rent.getBeginTime(), rent.getEndTime());
         return Response.ok().entity(rentResult).build();

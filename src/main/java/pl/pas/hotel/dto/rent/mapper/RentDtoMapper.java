@@ -4,6 +4,7 @@ import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import lombok.NoArgsConstructor;
 import pl.pas.hotel.dto.rent.RentDto;
+import pl.pas.hotel.exceptions.RoomWithGivenIdNotExist;
 import pl.pas.hotel.managers.RoomManager;
 import pl.pas.hotel.managers.UserManager;
 import pl.pas.hotel.model.rent.Rent;
@@ -22,7 +23,7 @@ public class RentDtoMapper {
     @Inject
     RoomManager roomManager;
 
-    public Rent toRent(RentDto rentDto) {
+    public Rent toRent(RentDto rentDto) throws RoomWithGivenIdNotExist {
         Client client = userManager.getClientById(UUID.fromString(rentDto.getClientId()));
         Room room = roomManager.getRoomById(rentDto.getRoomUuid().toString());
 
