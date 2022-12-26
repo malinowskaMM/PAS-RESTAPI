@@ -27,12 +27,15 @@ public class RoomTest {
                 .body("roomNumber", equalTo(1))
                 .body("price", equalTo(120.0F))
                 .body("roomCapacity", equalTo(2))
-                .extract().path("uuid");
+                .extract().path("roomId");
 
         System.out.println(uuid); //TODO zwraca nulla do sprawdzenia
 
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rooms/"+uuid);
+
+
+        System.out.println(response.asString());
 
 
     }
