@@ -2,19 +2,15 @@ package pl.pas.hotel.pas_rest_api;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pl.pas.hotel.dto.rent.RentDto;
 import pl.pas.hotel.dto.rent.mapper.RentDtoMapper;
-import pl.pas.hotel.exceptions.RoomWithGivenIdNotExist;
+import pl.pas.hotel.exceptions.*;
 import pl.pas.hotel.managers.RentManager;
 import pl.pas.hotel.model.rent.Rent;
-import pl.pas.hotel.model.room.Room;
-import pl.pas.hotel.model.user.client.Client;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RequestScoped
@@ -36,14 +32,14 @@ public class RentResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/room/{uuid}")
-    public Response getRentsByRoom(@PathParam("uuid") UUID roomId) {
+    public Response getRentsByRoom(@PathParam("uuid") UUID roomId) throws RoomWithGivenIdNotFound {
         return Response.ok().entity(rentManager.getRentsByRoomId(roomId)).build();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/client/{uuid}")
-    public Response getRentsByClient(@PathParam("uuid") UUID clientId) {
+    public Response getRentsByClient(@PathParam("uuid") UUID clientId) throws UserWithGivenIdNotFound {
         return Response.ok().entity(rentManager.getRentsByClientId(clientId)).build();
     }
 /*
@@ -64,7 +60,7 @@ public class RentResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response rentRoom(RentDto rentDto) throws RoomWithGivenIdNotExist {
+    public Response rentRoom(RentDto rentDto) throws RoomWithGivenIdNotFound, ClientWithGivenIdNotFound, RoomNotAvailable, RentValidationFailed, DateTimeValidationFailed {
         Rent rent = rentDtoMapper.toRent(rentDto);
         Rent rentResult = rentManager.rentRoom(rent.getClient(), rent.getRoom(), rent.getBeginTime(), rent.getEndTime());
         return Response.ok().entity(rentResult).build();
@@ -72,7 +68,7 @@ public class RentResource {
 
     @PUT
     @Path("/{uuid}")
-    public Response endRent(@PathParam("uuid") UUID rentId) {
+    public Response endRent(@PathParam("uuid") UUID rentId) throws RentWithGivenIdNotFound {
         if(rentManager.getRent(rentId) == null) {
             return Response.status(404).build();
         }
@@ -82,7 +78,7 @@ public class RentResource {
 
     @GET
     @Path("/{uuid}")
-    public Response getRent(@PathParam("uuid") UUID rentId) {
+    public Response getRent(@PathParam("uuid") UUID rentId) throws RentWithGivenIdNotFound {
         if(rentManager.getRent(rentId) == null) {
             return Response.status(404).build();
         }
@@ -92,7 +88,7 @@ public class RentResource {
 
     @DELETE
     @Path("/{uuid}")
-    public Response deleteRent(@PathParam("uuid") UUID rentId) {
+    public Response deleteRent(@PathParam("uuid") UUID rentId) throws RentWithGivenIdNotFound {
         if(rentManager.getRent(rentId) == null) {
             return Response.status(404).build();
         }

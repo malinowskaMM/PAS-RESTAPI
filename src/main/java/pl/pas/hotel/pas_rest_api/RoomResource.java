@@ -9,7 +9,7 @@ import jakarta.ws.rs.core.Response;
 import pl.pas.hotel.dto.room.RoomDto;
 import pl.pas.hotel.dto.room.mapper.RoomDtoMapper;
 import pl.pas.hotel.exceptions.RoomValidationFailed;
-import pl.pas.hotel.exceptions.RoomWithGivenIdNotExist;
+import pl.pas.hotel.exceptions.RoomWithGivenIdNotFound;
 import pl.pas.hotel.managers.RoomManager;
 import pl.pas.hotel.model.room.Room;
 
@@ -41,7 +41,7 @@ public class RoomResource {
 
     @DELETE
     @Path("/{uuid}")
-    public Response deleteRoom(@PathParam("uuid") UUID roomId) throws RoomWithGivenIdNotExist {
+    public Response deleteRoom(@PathParam("uuid") UUID roomId) throws RoomWithGivenIdNotFound {
         if(roomManager.getRoomById(roomId.toString()) == null) {
             return Response.status(404).build();
         }
@@ -51,7 +51,7 @@ public class RoomResource {
 
     @GET
     @Path("/{uuid}")
-    public Response getRoom(@PathParam("uuid") UUID roomId) throws RoomWithGivenIdNotExist {
+    public Response getRoom(@PathParam("uuid") UUID roomId) throws RoomWithGivenIdNotFound {
         if(roomManager.getRoomById(roomId.toString()) == null) {
             return Response.status(404).build();
         }
@@ -61,7 +61,7 @@ public class RoomResource {
     @PUT
     @Path("/{uuid}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateRoom(@PathParam("uuid") UUID roomId, RoomDto roomDto) throws RoomWithGivenIdNotExist {
+    public Response updateRoom(@PathParam("uuid") UUID roomId, RoomDto roomDto) throws RoomWithGivenIdNotFound {
         if(roomManager.getRoomById(roomId.toString()) == null) {
             return Response.status(404).build();
         }

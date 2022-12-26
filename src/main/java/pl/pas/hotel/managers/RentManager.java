@@ -4,14 +4,11 @@ import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import pl.pas.hotel.exceptions.*;
 import pl.pas.hotel.model.rent.Rent;
 import pl.pas.hotel.model.room.Room;
 import pl.pas.hotel.model.user.client.Client;
 import pl.pas.hotel.repositoriesImplementation.RentRepository;
-import pl.pas.hotel.repositoriesImplementation.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,15 +18,17 @@ import java.util.stream.Collectors;
 @Stateless
 public class RentManager {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Slf4j.class);
     @Inject
     private RentRepository rentRepository;
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @Inject
-    private UserRepository userRepository;
+    private UserManager userManager;
 
-    public Rent rentRoom(Client client, Room room, LocalDateTime beginTime, LocalDateTime endTime) {
+    @Inject
+    private RoomManager roomManager;
+
+    public Rent rentRoom(Client client, Room room, LocalDateTime beginTime, LocalDateTime endTime) throws RoomNotAvailable, RentValidationFailed, DateTimeValidationFailed {
         if (validator.validate(client).isEmpty() && validator.validate(room).isEmpty()) {
             if (beginTime.isBefore(endTime)) {
                     final List<Rent> rents = rentRepository.getCurrentRentsByRoom(room.getRoomId(), beginTime, endTime);
@@ -37,23 +36,22 @@ public class RentManager {
                         final UUID rentId = rentRepository.createRent(beginTime, endTime, client, room);
                         return rentRepository.getRentById(rentId);
                     } else {
-                        LOGGER.warn("Room {} is already reserved", room.getRoomNumber());
+                        throw new RoomNotAvailable("Room is not available");
                     }
             } else {
-                LOGGER.warn("Begin time of reservation {} is not earlier than end time of reservation {}", beginTime, endTime);
+                throw new DateTimeValidationFailed("Begin time of reservation is not earlier than end time of reservation");
             }
         } else {
-            LOGGER.error("Parameters validation failed");
+            throw new RentValidationFailed("Cannot rent room");
         }
-        return null;
     }
 
-    public void endRoomRent(UUID id) {
+    public void endRoomRent(UUID id) throws RentWithGivenIdNotFound {
         final Rent rent = rentRepository.getRentById(id);
         if (rent != null) {
             rentRepository.endRent(id);
         } else {
-            LOGGER.warn("Rent {} does not exist in the database", rent.getId());
+            throw new RentWithGivenIdNotFound("Cannot found rent with given id");
         }
     }
 
@@ -61,11 +59,13 @@ public class RentManager {
         return rentRepository.getRents();
     }
 
-    public List<Rent> getRentsByClientId(UUID clientId) {
+    public List<Rent> getRentsByClientId(UUID clientId) throws UserWithGivenIdNotFound {
+        userManager.getUserById(clientId);
         return rentRepository.getRentsByClient(clientId);
     }
 
-    public List<Rent> getRentsByRoomId(UUID roomId) {
+    public List<Rent> getRentsByRoomId(UUID roomId) throws RoomWithGivenIdNotFound {
+        roomManager.getRoomById(roomId.toString());
         return rentRepository.getRentsByRoom(roomId);
     }
 
@@ -77,13 +77,16 @@ public class RentManager {
         return rentRepository.getRents().stream().filter(rent -> rent.getEndTime().isEqual(endDate)).collect(Collectors.toList());
     }
 
-
-    public Rent getRent(UUID rentId) {
-        return rentRepository.getRentById(rentId);
+    public Rent getRent(UUID id) throws RentWithGivenIdNotFound {
+        final Rent rent = rentRepository.getRentById(id);
+        if (rent == null) {
+           throw new RentWithGivenIdNotFound("Cannot found rent with given id");
+        }
+        return rent;
     }
 
-    public void removeRent(UUID rentId) {
-        rentRepository.removeRent(rentId);
+    public void removeRent(UUID rentId) throws RentWithGivenIdNotFound {
+        rentRepository.removeRent(getRent(rentId).getId());
     }
 
 }

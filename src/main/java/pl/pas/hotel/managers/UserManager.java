@@ -2,13 +2,9 @@ package pl.pas.hotel.managers;
 
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
-import jakarta.mail.Address;
-import jakarta.persistence.RollbackException;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import pl.pas.hotel.exceptions.*;
 import pl.pas.hotel.model.user.User;
 import pl.pas.hotel.model.user.admin.Admin;
 import pl.pas.hotel.model.user.client.Client;
@@ -23,95 +19,83 @@ import java.util.function.Predicate;
 @Stateless
 public class UserManager {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Slf4j.class);
-
     @Inject
     private UserRepository userRepository;
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-    public synchronized Client registerClient(String firstName, String lastName, String personalId, String address, String login) {
+    public synchronized Client registerClient(String firstName, String lastName, String personalId, String address, String login) throws ClientValidationFailed {
         final Client client = new Client(personalId, firstName, lastName, address, login);
-        if (validator.validate(client).size() == 0) {
+        if (validator.validate(client).isEmpty()) {
                     final UUID saved = userRepository.createClient(client.getPersonalId(), client.getFirstName(), client.getLastName(), client.getAddress(), client.getLogin());
-                    LOGGER.debug("Client registered successfully");
                     return (Client) userRepository.getUserById(saved).getUser();
         } else {
-            LOGGER.error("Client {} validation failed.", client.getId());
+            throw new ClientValidationFailed("Cannot register client");
         }
-        return null;
     }
 
-    public synchronized Manager registerManager(String login) {
+    public synchronized Manager registerManager(String login) throws ManagerValidationFailed {
         final Manager manager = new Manager(login);
-        if (validator.validate(manager).size() == 0) {
-            try {
+        if (validator.validate(manager).isEmpty()) {
                 final UUID saved = userRepository.createManager(manager.getLogin());
-                LOGGER.debug("Manager registered successfully");
                 return (Manager) userRepository.getUserById(saved).getUser();
-            } catch (RollbackException e) {
-                LOGGER.error("Transaction failed:", e);
-            }
         } else {
-            LOGGER.error("Manager {} validation failed.", manager.getId());
+            throw new ManagerValidationFailed("Cannot register manager");
         }
-        return null;
     }
 
-    public synchronized Admin registerAdmin(String login) {
+    public synchronized Admin registerAdmin(String login) throws AdminValidationFailed {
         final Admin admin = new Admin(login);
-        if (validator.validate(admin).size() == 0) {
-            try {
+        if (validator.validate(admin).isEmpty()) {
                 final UUID saved = userRepository.createAdmin(admin.getLogin());
-                LOGGER.debug("Admin registered successfully");
                 return (Admin) userRepository.getUserById(saved).getUser();
-            } catch (RollbackException e) {
-                LOGGER.error("Transaction failed:", e);
-            }
         } else {
-            LOGGER.error("Admin {} validation failed.", admin.getId());
+            throw new AdminValidationFailed("Cannot register admin");
         }
-        return null;
     }
 
-    public synchronized void updateUser(UUID id, String firstName, String lastName, String address, String login) {
+    public synchronized void updateUser(UUID id, String firstName, String lastName, String address, String login) throws UserWithGivenIdNotFound {
         final User user = userRepository.getUserById(id).getUser();
         if (user == null) {
-            LOGGER.warn("Client {} does not exist in the database", id);
+            throw new UserWithGivenIdNotFound("Not found user with given id");
         } else {
             userRepository.modifyUser(id, login, firstName, lastName, address);
-            if (!validator.validate(userRepository.getUserById(id)).isEmpty()) {
-                LOGGER.warn("Room {} validation failed", id);
-            }
-            LOGGER.debug("Room modified successfully");
         }
     }
 
-    public Client getClientById(UUID id) {
-            return (Client) userRepository.getUserById(id).getUser();
+    public Client getClientById(UUID id) throws ClientWithGivenIdNotFound {
+            final Client client = (Client) userRepository.getUserById(id).getUser();
+            if (client == null) {
+                throw new ClientWithGivenIdNotFound("Not found client with given id");
+            }
+            return client;
     }
 
-    public User getUserById(UUID id) {
-        return userRepository.getUserById(id);
+    public User getUserById(UUID id) throws UserWithGivenIdNotFound {
+        final User user = userRepository.getUserById(id).getUser();
+        if (user == null) {
+            throw new UserWithGivenIdNotFound("Not found user with given id");
+        }
+        return user;
     }
 
     public List<User> findClients(Predicate<User> predicate) {
         return userRepository.getUsersBy(predicate);
     }
 
-    public void activateUser(UUID id) {
-        userRepository.activateUser(id);
+    public void activateUser(UUID id) throws UserWithGivenIdNotFound {
+        userRepository.activateUser(getUserById(id).getId());
     }
 
-    public void deactivateUser(UUID id) {
-        userRepository.deactivateUser(id);
+    public void deactivateUser(UUID id) throws UserWithGivenIdNotFound {
+        userRepository.deactivateUser(getUserById(id).getId());
     }
 
     public List<User> getAllUsers(){
         return userRepository.getUsers();
     }
 
-    public void deleteUser(UUID id) {
-        userRepository.deleteUser(id);
+    public void deleteUser(UUID id) throws UserWithGivenIdNotFound {
+        userRepository.deleteUser(getUserById(id).getId());
     }
 
 }

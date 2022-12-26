@@ -5,7 +5,7 @@ import jakarta.inject.Inject;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import pl.pas.hotel.exceptions.RoomValidationFailed;
-import pl.pas.hotel.exceptions.RoomWithGivenIdNotExist;
+import pl.pas.hotel.exceptions.RoomWithGivenIdNotFound;
 import pl.pas.hotel.model.room.Room;
 import pl.pas.hotel.repositoriesImplementation.RoomRepository;
 
@@ -28,29 +28,29 @@ public class RoomManager {
         }
     }
 
-    public synchronized void removeRoom(UUID id) throws RoomWithGivenIdNotExist {
+    public synchronized void removeRoom(UUID id) throws RoomWithGivenIdNotFound {
         final Room room1 = roomRepository.getRoomById(id);
         if (room1 == null) {
-            throw new RoomWithGivenIdNotExist("Cannot delete room");
+            throw new RoomWithGivenIdNotFound("Cannot delete room");
         } else {
             roomRepository.deleteRoom(room1.getRoomId());
         }
 
     }
 
-    public synchronized void updateRoom(UUID id, Integer roomNumber, Double basePrice, int roomCapacity) throws RoomWithGivenIdNotExist {
+    public synchronized void updateRoom(UUID id, Integer roomNumber, Double basePrice, int roomCapacity) throws RoomWithGivenIdNotFound {
         final Room room1 = roomRepository.getRoomById(id);
         if (room1 == null) {
-            throw new RoomWithGivenIdNotExist("Cannot update room");
+            throw new RoomWithGivenIdNotFound("Cannot update room");
         } else {
             roomRepository.modifyRoom(id, roomNumber, basePrice, roomCapacity);
         }
     }
 
-    public Room getRoomById(String id) throws RoomWithGivenIdNotExist {
+    public Room getRoomById(String id) throws RoomWithGivenIdNotFound {
         final Room room = roomRepository.getRoomById(UUID.fromString(id));
         if (room == null) {
-            throw new RoomWithGivenIdNotExist("Cannot update room");
+            throw new RoomWithGivenIdNotFound("Cannot update room");
         }
         return room;
     }

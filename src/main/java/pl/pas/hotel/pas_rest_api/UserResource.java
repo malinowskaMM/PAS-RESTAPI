@@ -11,6 +11,7 @@ import pl.pas.hotel.dto.user.ClientDto;
 import pl.pas.hotel.dto.user.ManagerDto;
 import pl.pas.hotel.dto.user.UserDto;
 import pl.pas.hotel.dto.user.mapper.UserDtoMapper;
+import pl.pas.hotel.exceptions.*;
 import pl.pas.hotel.managers.UserManager;
 import pl.pas.hotel.model.user.User;
 import pl.pas.hotel.model.user.admin.Admin;
@@ -31,7 +32,7 @@ public class UserResource {
 
     @POST
     @Path("/client")
-    public Response createClient(@Valid ClientDto clientDto) {
+    public Response createClient(@Valid ClientDto clientDto) throws ClientValidationFailed {
         Client client = (Client) userDtoMapper.toUser(clientDto);
         userManager.registerClient(client.getFirstName(), client.getLastName(), client.getPersonalId(), client.getAddress(), client.getLogin());
         return Response.ok().entity(client).build();
@@ -39,7 +40,7 @@ public class UserResource {
 
     @POST
     @Path("/admin")
-    public Response createAdmin(@Valid AdminDto adminDto) {
+    public Response createAdmin(@Valid AdminDto adminDto) throws AdminValidationFailed {
         Admin admin = (Admin) userDtoMapper.toUser(adminDto);
         userManager.registerAdmin(admin.getLogin());
         return Response.ok().entity(admin).build();
@@ -47,15 +48,15 @@ public class UserResource {
 
     @POST
     @Path("/manager")
-    public Response createManager(@Valid ManagerDto managerDto) {
+    public Response createManager(@Valid ManagerDto managerDto) throws ManagerValidationFailed {
         Manager manager = (Manager) userDtoMapper.toUser(managerDto);
-        userManager.registerAdmin(manager.getLogin());
+        userManager.registerManager(manager.getLogin());
         return Response.ok().entity(manager).build();
     }
 
     @PUT
     @Path("/client/{uuid}")
-    public Response updateClient(@PathParam("uuid") UUID id, @Valid ClientDto clientDto) {
+    public Response updateClient(@PathParam("uuid") UUID id, @Valid ClientDto clientDto) throws UserWithGivenIdNotFound {
         if(userManager.getUserById(id) == null ) {
             return Response.status(404).build();
         }
@@ -66,7 +67,7 @@ public class UserResource {
 
     @PUT
     @Path("/admin/{uuid}")
-    public Response updateAdmin(@PathParam("uuid") UUID id, @Valid AdminDto adminDto) {
+    public Response updateAdmin(@PathParam("uuid") UUID id, @Valid AdminDto adminDto) throws UserWithGivenIdNotFound {
         if(userManager.getUserById(id) == null ) {
             return Response.status(404).build();
         }
@@ -77,7 +78,7 @@ public class UserResource {
 
     @PUT
     @Path("/manager/{uuid}")
-    public Response updateUser(@PathParam("uuid") UUID id, @Valid ManagerDto managerDto) {
+    public Response updateUser(@PathParam("uuid") UUID id, @Valid ManagerDto managerDto) throws UserWithGivenIdNotFound {
         if(userManager.getUserById(id) == null ) {
             return Response.status(404).build();
         }
@@ -94,7 +95,7 @@ public class UserResource {
 
     @DELETE
     @Path("/{uuid}")
-    public Response deleteUser(@PathParam("uuid")UUID userId) {
+    public Response deleteUser(@PathParam("uuid")UUID userId) throws UserWithGivenIdNotFound {
         if(userManager.getUserById(userId) == null ) {
             return Response.status(404).build();
         }
@@ -104,7 +105,7 @@ public class UserResource {
 
     @GET
     @Path("/{uuid}")
-    public Response getUser(@PathParam("uuid") UUID userId) {
+    public Response getUser(@PathParam("uuid") UUID userId) throws UserWithGivenIdNotFound {
         if(userManager.getUserById(userId) == null ) {
             return Response.status(404).build();
         }
