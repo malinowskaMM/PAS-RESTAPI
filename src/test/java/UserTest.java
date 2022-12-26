@@ -16,6 +16,7 @@ public class UserTest {
         JSONObject createClientRequest = new JSONObject();
         createClientRequest.put("login", "exampleUser");
         createClientRequest.put("password", "examplePassword");
+        createClientRequest.put("accessLevel", "CLIENT");
         createClientRequest.put("personalId", "12345678910");
         createClientRequest.put("firstName", "Jan");
         createClientRequest.put("lastName", "Kowalski");
@@ -27,7 +28,7 @@ public class UserTest {
                 body(createClientRequest.toJSONString()).when().
                 post("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/client").
                 then().statusCode(200) //TODO: gives 400
-                .extract().path("id");
+                .extract().path("uuid");
     }
 
     @Test
@@ -37,6 +38,11 @@ public class UserTest {
 
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/" + exampleUUID);
+
+        Response response1 = RestAssured.given().contentType(ContentType.JSON).
+                when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users");
+
+        System.out.println(response1.asString());
 
         //assertThat(response.asString()).isEqualTo("{\"price\":120.0,\"roomCapacity\":2,\"roomId\":\""+exampleUUID+"\",\"roomNumber\":1}");
     }
