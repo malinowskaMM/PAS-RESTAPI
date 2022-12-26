@@ -73,12 +73,12 @@ public class UserManager {
         return null;
     }
 
-    public synchronized void updateClient(UUID id, String firstName, String lastName, String personalId, String address, String login) {
-        final Client client = (Client) userRepository.getUserById(id).getUser();
-        if (client == null) {
+    public synchronized void updateUser(UUID id, String firstName, String lastName, String address, String login) {
+        final User user = userRepository.getUserById(id).getUser();
+        if (user == null) {
             LOGGER.warn("Client {} does not exist in the database", id);
         } else {
-            userRepository.modifyClient(id, firstName, lastName, address);
+            userRepository.modifyUser(id, login, firstName, lastName, address);
             if (!validator.validate(userRepository.getUserById(id)).isEmpty()) {
                 LOGGER.warn("Room {} validation failed", id);
             }

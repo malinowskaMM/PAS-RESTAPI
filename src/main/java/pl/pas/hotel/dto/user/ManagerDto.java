@@ -9,7 +9,7 @@ public class ManagerDto extends UserDto{
         return super.getLogin();
     }
 
-    public ManagerDto(boolean isActive, String login) {
-        super(isActive, login);
+    public ManagerDto(String login) {
+        super(login);
     }
 }

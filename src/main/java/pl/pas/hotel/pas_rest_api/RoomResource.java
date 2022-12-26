@@ -58,6 +58,7 @@ public class RoomResource {
 
     @PUT
     @Path("/{uuid}")
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response updateRoom(@PathParam("uuid") UUID roomId, RoomDto roomDto) {
         if(roomManager.getRoomById(roomId.toString()) == null) {
             return Response.status(404).build();

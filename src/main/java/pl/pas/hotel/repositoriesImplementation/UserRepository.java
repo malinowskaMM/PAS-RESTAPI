@@ -51,14 +51,20 @@ public class UserRepository implements pl.pas.hotel.repositories.UserRepository 
     }
 
     @Override
-    public User modifyClient(UUID id, String firstName, String lastName, String address) {
+    public User modifyUser(UUID id, String login, String firstName, String lastName, String address) {
         User user = getUserById(id);
-        if(user != null && user.getClass().equals(Client.class)) {
-            Client client = (Client) user;
-             client.setFirstName(firstName);
-             client.setLastName(lastName);
-             client.setAddress(address);
-             return client;
+        if(user != null) {
+            if(user instanceof Client client) {
+                client.setFirstName(firstName);
+                client.setLastName(lastName);
+                client.setAddress(address);
+                client.getUser().setLogin(login);
+                return client;
+            } else if (user instanceof Admin admin) {
+                admin.setLogin(login);
+            } else if(user instanceof Manager manager) {
+                manager.setLogin(login);
+            }
         }
         return null;
     }

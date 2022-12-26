@@ -1,12 +1,12 @@
 package pl.pas.hotel.model.room;
 
 import lombok.*;
-import pl.pas.hotel.model.abstractEntity.AbstractEntity;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Getter
-public class Room extends AbstractEntity {
+public class Room implements Serializable {
 
     private UUID roomId;
     private Integer roomNumber;

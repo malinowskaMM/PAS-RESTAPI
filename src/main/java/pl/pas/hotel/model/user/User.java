@@ -1,31 +1,24 @@
 package pl.pas.hotel.model.user;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.json.bind.annotation.JsonbTransient;
 import lombok.Getter;
-import pl.pas.hotel.model.abstractEntity.AbstractEntity;
+import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-@Entity
 @Getter
-public abstract class User extends AbstractEntity {
+@Setter
+public class User implements Serializable {
 
-    @Id
     private UUID id;
     private boolean isActive;
-    private final String login;
+    private String login;
 
     protected User(boolean isActive, String login) {
         this.id = UUID.randomUUID();
         this.isActive = isActive;
         this.login = login;
-    }
-
-    protected User() {
-        this.id = null;
-        this.login = null;
-        this.isActive = false;
     }
 
     public boolean isActive() {
@@ -44,5 +37,7 @@ public abstract class User extends AbstractEntity {
         return login;
     }
 
-    public abstract User getUser();
+    public User getUser(){
+        return this;
+    }
 }

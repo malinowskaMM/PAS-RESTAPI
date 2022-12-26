@@ -14,7 +14,7 @@ public interface UserRepository {
     UUID createManager(String login);
     List<User> getUsers();
     List<User> getUsersBy(Predicate<User> predicate);
-    User modifyClient(UUID id, String firstName, String lastName, String address);
+    User modifyUser(UUID id, String login, String firstName, String lastName, String address);
     User getUserById(UUID id);
     void activateUser(UUID id);
     void deactivateUser(UUID id);

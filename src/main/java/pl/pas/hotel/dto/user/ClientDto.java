@@ -2,9 +2,7 @@ package pl.pas.hotel.dto.user;
 
 import jakarta.json.bind.annotation.JsonbCreator;
 import jakarta.json.bind.annotation.JsonbProperty;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
@@ -26,17 +24,13 @@ public class ClientDto extends UserDto{
     @NotNull
     private String address;
 
-    @NotNull
-    @PositiveOrZero
-    private Double moneySpent;
 
     @JsonbCreator
-    public ClientDto(@JsonbProperty("isActive")boolean isActive, @JsonbProperty("login")String login, @JsonbProperty("personalId")String personalId, @JsonbProperty("firstName")String firstName, @JsonbProperty("isActive")String lastName, @JsonbProperty("address")String address, @JsonbProperty("moneySpent")Double moneySpent) {
-        super(isActive, login);
+    public ClientDto(@JsonbProperty("login")String login, @JsonbProperty("personalId")String personalId, @JsonbProperty("firstName")String firstName, @JsonbProperty("lastName")String lastName, @JsonbProperty("address")String address) {
+        super(login);
         this.personalId = personalId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
-        this.moneySpent = moneySpent;
     }
 }
