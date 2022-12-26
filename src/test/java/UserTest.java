@@ -24,7 +24,7 @@ public class UserTest {
                 header("Content-Type","application/json" ).
                 header("Accept","application/json" ).
                 body(createClientRequest.toJSONString()).when().
-                post("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/user").
+                post("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/client").
                 then().statusCode(200) //TODO: gives 500
                 .extract().path("id");
     }

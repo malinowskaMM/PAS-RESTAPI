@@ -30,39 +30,59 @@ public class UserResource {
     UserDtoMapper userDtoMapper;
 
     @POST
-    @Path("/user")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response createUser(@Valid UserDto userDto) {
-        User user = userDtoMapper.toUser(userDto);
-        if(user instanceof Client client) {
-            userManager.registerClient(((Client) user).getFirstName(), ((Client) user).getLastName(), ((Client) user).getPersonalId(), ((Client) user).getAddress(), user.getLogin());
-            return Response.ok().entity(client).build();
-        } else if(user instanceof Admin admin) {
-            userManager.registerAdmin(admin.getLogin());
-            return Response.ok().entity(admin).build();
-        } else if(user instanceof Manager manager) {
-            userManager.registerManager(manager.getLogin());
-            return Response.ok().entity(manager).build();
-        }
-            return Response.status(418).build();
+    @Path("/client")
+    public Response createClient(@Valid ClientDto clientDto) {
+        Client client = (Client) userDtoMapper.toUser(clientDto);
+        userManager.registerClient(client.getFirstName(), client.getLastName(), client.getPersonalId(), client.getAddress(), client.getLogin());
+        return Response.ok().entity(client).build();
+    }
+
+    @POST
+    @Path("/admin")
+    public Response createAdmin(@Valid AdminDto adminDto) {
+        Admin admin = (Admin) userDtoMapper.toUser(adminDto);
+        userManager.registerAdmin(admin.getLogin());
+        return Response.ok().entity(admin).build();
+    }
+
+    @POST
+    @Path("/manager")
+    public Response createManager(@Valid ManagerDto managerDto) {
+        Manager manager = (Manager) userDtoMapper.toUser(managerDto);
+        userManager.registerAdmin(manager.getLogin());
+        return Response.ok().entity(manager).build();
     }
 
     @PUT
-    @Path("{uuid}")
-    public Response updateUser(@PathParam("uuid") UUID roomId, @Valid UserDto userDto) {
-        if(userManager.getUserById(roomId) == null ) {
+    @Path("/client/{uuid}")
+    public Response updateClient(@PathParam("uuid") UUID id, @Valid ClientDto clientDto) {
+        if(userManager.getUserById(id) == null ) {
             return Response.status(404).build();
         }
-        User user = userDtoMapper.toUser(userDto);
-        if(user instanceof Client client) {
-            userManager.updateUser(client.getId(), client.getFirstName(), client.getLastName(), client.getAddress(), client.getLogin());
-        } else if(user instanceof Admin admin) {
-            userManager.updateUser(admin.getId(), null, null, null, admin.getLogin());
-        } else if(user instanceof Manager manager) {
-            userManager.updateUser(manager.getId(), null, null, null, manager.getLogin());
-        } else {
-            return Response.status(418).build();
+        Client client = (Client) userDtoMapper.toUser(clientDto);
+        userManager.updateUser(id, client.getFirstName(), client.getLastName(), client.getAddress(), client.getLogin());
+        return Response.ok().build();
+    }
+
+    @PUT
+    @Path("/admin/{uuid}")
+    public Response updateAdmin(@PathParam("uuid") UUID id, @Valid AdminDto adminDto) {
+        if(userManager.getUserById(id) == null ) {
+            return Response.status(404).build();
         }
+        Admin admin = (Admin) userDtoMapper.toUser(adminDto);
+        userManager.updateUser(id, null, null, null, admin.getLogin());
+        return Response.ok().build();
+    }
+
+    @PUT
+    @Path("/manager/{uuid}")
+    public Response updateUser(@PathParam("uuid") UUID id, @Valid ManagerDto managerDto) {
+        if(userManager.getUserById(id) == null ) {
+            return Response.status(404).build();
+        }
+        Manager manager = (Manager) userDtoMapper.toUser(managerDto);
+        userManager.updateUser(id, null, null, null, manager.getLogin());
         return Response.ok().build();
     }
 
