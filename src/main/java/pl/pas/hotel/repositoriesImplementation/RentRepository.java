@@ -46,7 +46,7 @@ public class RentRepository implements pl.pas.hotel.repositories.RentRepository 
 
     @Override
     public List<Rent> getRentsByClient(UUID clientId) {
-        return getRents().stream().filter(rent -> rent.getClient().getId().equals(clientId)).toList();
+        return getRents().stream().filter(rent -> rent.getClient().getUuid().equals(clientId)).toList();
     }
 
     @Override
@@ -54,10 +54,10 @@ public class RentRepository implements pl.pas.hotel.repositories.RentRepository 
         return getRents().stream().filter(rent -> rent.getRoom().getRoomId().equals(roomId)).toList();
     }
 
-    //TO DO
+
     @Override
     public List<Rent> getCurrentRentsByRoom(UUID roomId, LocalDateTime beginTime, LocalDateTime endTime) {
-        return null;
+        return null;  //TODO: method implementation
     }
 
     @Override

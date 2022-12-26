@@ -5,11 +5,7 @@ import lombok.Getter;
 @Getter
 public class ManagerDto extends UserDto{
 
-    public String getLogin() {
-        return super.getLogin();
-    }
-
-    public ManagerDto(String login) {
-        super(login);
+    public ManagerDto(String login, String password, String accessLevel) {
+        super(login, password, accessLevel);
     }
 }

@@ -1,24 +1,35 @@
 package pl.pas.hotel.model.user;
 
-import jakarta.json.bind.annotation.JsonbTransient;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.UUID;
 
-@Getter
-@Setter
-public class User implements Serializable {
+public abstract class User implements Serializable{
 
-    private UUID id;
+    @Getter
+    private UUID uuid;
     private boolean isActive;
+
+    @Getter
+    @Setter
     private String login;
 
-    protected User(boolean isActive, String login) {
-        this.id = UUID.randomUUID();
+    @Getter
+    @Setter
+    private String password;
+
+    @Getter
+    @Setter
+    private AccessLevel accessLevel;
+
+    protected User(boolean isActive, String login, String password, AccessLevel accessLevel) {
+        this.uuid = UUID.randomUUID();
         this.isActive = isActive;
         this.login = login;
+        this.password = password;
+        this.accessLevel = accessLevel;
     }
 
     public boolean isActive() {
@@ -33,11 +44,4 @@ public class User implements Serializable {
         isActive = false;
     }
 
-    public String getLogin() {
-        return login;
-    }
-
-    public User getUser(){
-        return this;
-    }
 }

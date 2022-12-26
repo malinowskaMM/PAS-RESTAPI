@@ -26,8 +26,8 @@ public class ClientDto extends UserDto{
 
 
     @JsonbCreator
-    public ClientDto(@JsonbProperty("login")String login, @JsonbProperty("personalId")String personalId, @JsonbProperty("firstName")String firstName, @JsonbProperty("lastName")String lastName, @JsonbProperty("address")String address) {
-        super(login);
+    public ClientDto(@JsonbProperty("login")String login, @JsonbProperty("password")String password, @JsonbProperty("accessLevel")String accessLevel, @JsonbProperty("personalId")String personalId, @JsonbProperty("firstName")String firstName, @JsonbProperty("lastName")String lastName, @JsonbProperty("address")String address) {
+        super(login, password, accessLevel);
         this.personalId = personalId;
         this.firstName = firstName;
         this.lastName = lastName;

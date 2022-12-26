@@ -1,6 +1,7 @@
 package pl.pas.hotel.repositoriesImplementation;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import pl.pas.hotel.model.user.AccessLevel;
 import pl.pas.hotel.model.user.User;
 import pl.pas.hotel.model.user.admin.Admin;
 import pl.pas.hotel.model.user.client.Client;
@@ -20,24 +21,24 @@ public class UserRepository implements pl.pas.hotel.repositories.UserRepository 
     private final List<User> users = synchronizedList(new ArrayList<>());
 
     @Override
-    public UUID createClient(String personalId, String firstName, String lastName, String address, String login) {
-        Client client = new Client(personalId, firstName, lastName, address, login);
+    public UUID createClient(String personalId, String firstName, String lastName, String address, String login, String password, AccessLevel accessLevel) {
+        Client client = new Client(personalId, firstName, lastName, address, login, password, accessLevel);
         users.add(client);
-        return client.getId();
+        return client.getUuid();
     }
 
     @Override
-    public UUID createAdmin(String login) {
-        Admin admin = new Admin(login);
+    public UUID createAdmin(String login, String password, AccessLevel accessLevel) {
+        Admin admin = new Admin(login, password, accessLevel);
         users.add(admin);
-        return admin.getId();
+        return admin.getUuid();
     }
 
     @Override
-    public UUID createManager(String login) {
-        Manager manager = new Manager(login);
+    public UUID createManager(String login, String password, AccessLevel accessLevel) {
+        Manager manager = new Manager(login, password, accessLevel);
         users.add(manager);
-        return manager.getId();
+        return manager.getUuid();
     }
 
     @Override
@@ -51,19 +52,25 @@ public class UserRepository implements pl.pas.hotel.repositories.UserRepository 
     }
 
     @Override
-    public User modifyUser(UUID id, String login, String firstName, String lastName, String address) {
+    public User modifyUser(UUID id, String login, String password, AccessLevel accessLevel ,String firstName, String lastName, String address) {
         User user = getUserById(id);
         if(user != null) {
-            if(user instanceof Client client) {
+            if(user instanceof Client client && accessLevel.getAccessLevel().equals(AccessLevel.CLIENT.name())) {
                 client.setFirstName(firstName);
                 client.setLastName(lastName);
                 client.setAddress(address);
-                client.getUser().setLogin(login);
+                client.setLogin(login);
+                client.setPassword(password);
+                client.setAccessLevel(accessLevel);
                 return client;
-            } else if (user instanceof Admin admin) {
+            } else if (user instanceof Admin admin && accessLevel.getAccessLevel().equals(AccessLevel.ADMIN.name())) {
                 admin.setLogin(login);
-            } else if(user instanceof Manager manager) {
+                admin.setPassword(password);
+                admin.setAccessLevel(accessLevel);
+            } else if(user instanceof Manager manager && accessLevel.getAccessLevel().equals(AccessLevel.MANAGER.name())) {
                 manager.setLogin(login);
+                manager.setPassword(password);
+                manager.setAccessLevel(accessLevel);
             }
         }
         return null;
@@ -71,7 +78,7 @@ public class UserRepository implements pl.pas.hotel.repositories.UserRepository 
 
     @Override
     public User getUserById(UUID id) {
-        Optional<User> userOptional = users.stream().filter(user -> user.getId().equals(id)).findFirst();
+        Optional<User> userOptional = users.stream().filter(user -> user.getUuid().equals(id)).findFirst();
         return userOptional.orElse(null);
     }
 

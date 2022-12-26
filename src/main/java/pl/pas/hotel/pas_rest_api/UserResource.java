@@ -34,7 +34,7 @@ public class UserResource {
     @Path("/client")
     public Response createClient(@Valid ClientDto clientDto) throws ClientValidationFailed {
         Client client = (Client) userDtoMapper.toUser(clientDto);
-        userManager.registerClient(client.getFirstName(), client.getLastName(), client.getPersonalId(), client.getAddress(), client.getLogin());
+        userManager.registerClient(client.getFirstName(), client.getLastName(), client.getPersonalId(), client.getAddress(), client.getLogin(), client.getPassword());
         return Response.ok().entity(client).build();
     }
 
@@ -42,7 +42,7 @@ public class UserResource {
     @Path("/admin")
     public Response createAdmin(@Valid AdminDto adminDto) throws AdminValidationFailed {
         Admin admin = (Admin) userDtoMapper.toUser(adminDto);
-        userManager.registerAdmin(admin.getLogin());
+        userManager.registerAdmin(admin.getLogin(), admin.getPassword());
         return Response.ok().entity(admin).build();
     }
 
@@ -50,7 +50,7 @@ public class UserResource {
     @Path("/manager")
     public Response createManager(@Valid ManagerDto managerDto) throws ManagerValidationFailed {
         Manager manager = (Manager) userDtoMapper.toUser(managerDto);
-        userManager.registerManager(manager.getLogin());
+        userManager.registerManager(manager.getLogin(), manager.getPassword());
         return Response.ok().entity(manager).build();
     }
 
@@ -61,7 +61,7 @@ public class UserResource {
             return Response.status(404).build();
         }
         Client client = (Client) userDtoMapper.toUser(clientDto);
-        userManager.updateUser(id, client.getFirstName(), client.getLastName(), client.getAddress(), client.getLogin());
+        userManager.updateUser(id, client.getFirstName(), client.getLastName(), client.getAddress(), client.getLogin(), client.getPassword(), client.getAccessLevel());
         return Response.ok().build();
     }
 
@@ -72,7 +72,7 @@ public class UserResource {
             return Response.status(404).build();
         }
         Admin admin = (Admin) userDtoMapper.toUser(adminDto);
-        userManager.updateUser(id, null, null, null, admin.getLogin());
+        userManager.updateUser(id, null, null, null, admin.getLogin(), admin.getPassword(), admin.getAccessLevel());
         return Response.ok().build();
     }
 
@@ -83,7 +83,7 @@ public class UserResource {
             return Response.status(404).build();
         }
         Manager manager = (Manager) userDtoMapper.toUser(managerDto);
-        userManager.updateUser(id, null, null, null, manager.getLogin());
+        userManager.updateUser(id, null, null, null, manager.getLogin(), manager.getPassword(), manager.getAccessLevel());
         return Response.ok().build();
     }
 

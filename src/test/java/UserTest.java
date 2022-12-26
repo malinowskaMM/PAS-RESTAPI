@@ -15,6 +15,7 @@ public class UserTest {
     public void initialize() {
         JSONObject createClientRequest = new JSONObject();
         createClientRequest.put("login", "exampleUser");
+        createClientRequest.put("password", "examplePassword");
         createClientRequest.put("personalId", "12345678910");
         createClientRequest.put("firstName", "Jan");
         createClientRequest.put("lastName", "Kowalski");
@@ -25,7 +26,7 @@ public class UserTest {
                 header("Accept","application/json" ).
                 body(createClientRequest.toJSONString()).when().
                 post("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/client").
-                then().statusCode(200) //TODO: gives 500
+                then().statusCode(200) //TODO: gives 400
                 .extract().path("id");
     }
 
