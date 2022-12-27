@@ -34,7 +34,7 @@ public class UserResource {
     @Path("/client")
     public Response createClient(@Valid ClientDto clientDto) throws ClientValidationFailed {
         Client client = (Client) userDtoMapper.toUser(clientDto);
-        userManager.registerClient(client.getFirstName(), client.getLastName(), client.getPersonalId(), client.getAddress(), client.getLogin(), client.getPassword());
+        client = userManager.registerClient(client.getFirstName(), client.getLastName(), client.getPersonalId(), client.getAddress(), client.getLogin(), client.getPassword());
         return Response.ok().entity(client).build();
     }
 
@@ -42,7 +42,7 @@ public class UserResource {
     @Path("/admin")
     public Response createAdmin(@Valid AdminDto adminDto) throws AdminValidationFailed {
         Admin admin = (Admin) userDtoMapper.toUser(adminDto);
-        userManager.registerAdmin(admin.getLogin(), admin.getPassword());
+        admin = userManager.registerAdmin(admin.getLogin(), admin.getPassword());
         return Response.ok().entity(admin).build();
     }
 
@@ -50,7 +50,7 @@ public class UserResource {
     @Path("/manager")
     public Response createManager(@Valid ManagerDto managerDto) throws ManagerValidationFailed {
         Manager manager = (Manager) userDtoMapper.toUser(managerDto);
-        userManager.registerManager(manager.getLogin(), manager.getPassword());
+        manager = userManager.registerManager(manager.getLogin(), manager.getPassword());
         return Response.ok().entity(manager).build();
     }
 
@@ -96,10 +96,12 @@ public class UserResource {
     @DELETE
     @Path("/{uuid}")
     public Response deleteUser(@PathParam("uuid")UUID userId) throws UserWithGivenIdNotFound {
-        if(userManager.getUserById(userId) == null ) {
+        try {
+        userManager.getUserById(userId);
+        userManager.deleteUser(userId);
+        } catch (UserWithGivenIdNotFound e) {
             return Response.status(404).build();
         }
-        userManager.deleteUser(userId);
         return Response.ok().build();
     }
 

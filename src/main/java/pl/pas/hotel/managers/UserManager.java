@@ -27,8 +27,7 @@ public class UserManager {
     public synchronized Client registerClient(String firstName, String lastName, String personalId, String address, String login, String password) throws ClientValidationFailed {
         final Client client = new Client(personalId, firstName, lastName, address, login, password, AccessLevel.CLIENT);
         if (validator.validate(client).isEmpty()) {
-                    final UUID saved = userRepository.createClient(client.getPersonalId(), client.getFirstName(), client.getLastName(), client.getAddress(), client.getLogin(), client.getPassword(), client.getAccessLevel());
-                    return (Client) userRepository.getUserById(saved);
+                    return userRepository.createClient(client.getPersonalId(), client.getFirstName(), client.getLastName(), client.getAddress(), client.getLogin(), client.getPassword(), client.getAccessLevel());
         } else {
             throw new ClientValidationFailed("Cannot register client");
         }
@@ -37,8 +36,7 @@ public class UserManager {
     public synchronized Manager registerManager(String login, String password) throws ManagerValidationFailed {
         final Manager manager = new Manager(login, password, AccessLevel.MANAGER);
         if (validator.validate(manager).isEmpty()) {
-                final UUID saved = userRepository.createManager(manager.getLogin(), manager.getPassword(), manager.getAccessLevel());
-                return (Manager) userRepository.getUserById(saved);
+                return userRepository.createManager(manager.getLogin(), manager.getPassword(), manager.getAccessLevel());
         } else {
             throw new ManagerValidationFailed("Cannot register manager");
         }
@@ -47,8 +45,7 @@ public class UserManager {
     public synchronized Admin registerAdmin(String login, String password) throws AdminValidationFailed {
         final Admin admin = new Admin(login, password, AccessLevel.ADMIN);
         if (validator.validate(admin).isEmpty()) {
-                final UUID saved = userRepository.createAdmin(admin.getLogin(), admin.getPassword(), admin.getAccessLevel());
-                return (Admin) userRepository.getUserById(saved);
+                return userRepository.createAdmin(admin.getLogin(), admin.getPassword(), admin.getAccessLevel());
         } else {
             throw new AdminValidationFailed("Cannot register admin");
         }

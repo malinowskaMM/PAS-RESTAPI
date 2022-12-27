@@ -21,24 +21,24 @@ public class UserRepository implements pl.pas.hotel.repositories.UserRepository 
     private final List<User> users = synchronizedList(new ArrayList<>());
 
     @Override
-    public UUID createClient(String personalId, String firstName, String lastName, String address, String login, String password, AccessLevel accessLevel) {
+    public Client createClient(String personalId, String firstName, String lastName, String address, String login, String password, AccessLevel accessLevel) {
         Client client = new Client(personalId, firstName, lastName, address, login, password, accessLevel);
         users.add(client);
-        return client.getUuid();
+        return client;
     }
 
     @Override
-    public UUID createAdmin(String login, String password, AccessLevel accessLevel) {
+    public Admin createAdmin(String login, String password, AccessLevel accessLevel) {
         Admin admin = new Admin(login, password, accessLevel);
         users.add(admin);
-        return admin.getUuid();
+        return admin;
     }
 
     @Override
-    public UUID createManager(String login, String password, AccessLevel accessLevel) {
+    public Manager createManager(String login, String password, AccessLevel accessLevel) {
         Manager manager = new Manager(login, password, accessLevel);
         users.add(manager);
-        return manager.getUuid();
+        return manager;
     }
 
     @Override
@@ -56,6 +56,7 @@ public class UserRepository implements pl.pas.hotel.repositories.UserRepository 
         User user = getUserById(id);
         if(user != null) {
             if(user instanceof Client client && accessLevel.getAccessLevel().equals(AccessLevel.CLIENT.name())) {
+                System.out.println("jestem");
                 client.setFirstName(firstName);
                 client.setLastName(lastName);
                 client.setAddress(address);
