@@ -13,7 +13,6 @@ import pl.pas.hotel.dto.user.UserDto;
 import pl.pas.hotel.dto.user.mapper.UserDtoMapper;
 import pl.pas.hotel.exceptions.*;
 import pl.pas.hotel.managers.UserManager;
-import pl.pas.hotel.model.user.User;
 import pl.pas.hotel.model.user.admin.Admin;
 import pl.pas.hotel.model.user.client.Client;
 import pl.pas.hotel.model.user.manager.Manager;
@@ -112,6 +111,26 @@ public class UserResource {
             return Response.status(404).build();
         }
         return Response.ok().entity(userManager.getUserById(userId)).build();
+    }
+
+    @PUT
+    @Path("/client/activate/{uuid}")
+    public Response activateUser(@PathParam("uuid") UUID userId) throws UserWithGivenIdNotFound {
+        if(userManager.getUserById(userId) == null ) {
+            return Response.status(404).build();
+        }
+        userManager.activateUser(userId);
+        return Response.ok().build();
+    }
+
+    @PUT
+    @Path("/client/deactivate/{uuid}")
+    public Response deactivateUser(@PathParam("uuid") UUID userId) throws UserWithGivenIdNotFound {
+        if(userManager.getUserById(userId) == null ) {
+            return Response.status(404).build();
+        }
+        userManager.deactivateUser(userId);
+        return Response.ok().build();
     }
 
 }

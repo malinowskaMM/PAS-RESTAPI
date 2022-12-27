@@ -265,4 +265,24 @@ public class UserTest {
         assertThat(response2.asString()).isEqualTo("{\"accessLevel\":\"ADMIN\",\"active\":true,\"login\":\"exampleUserAdminUpdate\",\"password\":\"examplePasswordAdminUpdate\",\"uuid\":\""+adminExampleUUID+"\"}");
     }
 
+    @Test
+    public void shouldActivateClientWithGivenId() {
+
+        assertThat(exampleUUID).isNotNull();
+
+        Response response = RestAssured.given().contentType(ContentType.JSON).
+                when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/" + exampleUUID);
+
+        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\"exampleUser\",\"password\":\"examplePassword\",\"uuid\":\""+exampleUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
+
+        RestAssured.given().contentType(ContentType.JSON).
+                when().put("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/client/activate/" + exampleUUID);
+
+        Response response1 = RestAssured.given().contentType(ContentType.JSON).
+                when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/" + exampleUUID);
+
+        assertThat(response1.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":true,\"login\":\"exampleUser\",\"password\":\"examplePassword\",\"uuid\":\""+exampleUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
+
+    }
+
 }
