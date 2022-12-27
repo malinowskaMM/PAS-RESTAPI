@@ -2,6 +2,7 @@ package pl.pas.hotel.pas_rest_api;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -11,6 +12,7 @@ import pl.pas.hotel.exceptions.*;
 import pl.pas.hotel.managers.RentManager;
 import pl.pas.hotel.model.rent.Rent;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RequestScoped
@@ -42,7 +44,7 @@ public class RentResource {
     public Response getRentsByClient(@PathParam("uuid") UUID clientId) throws UserWithGivenIdNotFound {
         return Response.ok().entity(rentManager.getRentsByClientId(clientId)).build();
     }
-/*
+
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/startDate")
@@ -56,11 +58,10 @@ public class RentResource {
     public Response getRentsByEndDate(LocalDateTime endDate) {
         return Response.ok().entity(rentManager.getRentsByStartDate(endDate)).build();
     }
-*/
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response rentRoom(RentDto rentDto) throws RoomWithGivenIdNotFound, ClientWithGivenIdNotFound, RoomNotAvailable, RentValidationFailed, DateTimeValidationFailed {
+    public Response rentRoom(@Valid RentDto rentDto) throws RoomWithGivenIdNotFound, ClientWithGivenIdNotFound, RoomNotAvailable, RentValidationFailed, DateTimeValidationFailed {
         Rent rent = rentDtoMapper.toRent(rentDto);
         Rent rentResult = rentManager.rentRoom(rent.getClient(), rent.getRoom(), rent.getBeginTime(), rent.getEndTime());
         return Response.ok().entity(rentResult).build();

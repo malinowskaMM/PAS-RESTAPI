@@ -60,8 +60,8 @@ public class UserManager {
         }
     }
 
-    public Client getClientById(UUID id) throws ClientWithGivenIdNotFound {
-            final Client client = (Client) userRepository.getUserById(id);
+    public Client getClientById(String id) throws ClientWithGivenIdNotFound {
+            final Client client = (Client) userRepository.getUserById(UUID.fromString(id));
             if (client == null) {
                 throw new ClientWithGivenIdNotFound("Not found client with given id");
             }

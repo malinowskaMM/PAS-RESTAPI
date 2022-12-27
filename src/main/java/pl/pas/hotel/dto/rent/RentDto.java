@@ -14,29 +14,28 @@ import java.util.UUID;
 public class RentDto {
 
     @NotNull
-    @Size(min = 11, max = 11)
     String clientId;
 
     @NotNull
-    UUID roomUuid;
+    String roomId;
 
     @AssertTrue
     private boolean isEndTimeAfterBeginTime() {
         return endTime.isAfter(beginTime);
     }
 
-    @FutureOrPresent
+    //@FutureOrPresent
     @NotNull
     LocalDateTime beginTime;
 
-    @FutureOrPresent
+    //@FutureOrPresent
     @NotNull
     LocalDateTime endTime;
 
     @JsonbCreator
-    public RentDto(@JsonbProperty("clientId")String clientId, @JsonbProperty("roomUuid")UUID roomUuid, @JsonbProperty("startDate") LocalDateTime beginTime, @JsonbProperty("endDate") LocalDateTime endTime) {
+    public RentDto(@JsonbProperty("clientId")String clientId, @JsonbProperty("roomId")String roomId, @JsonbProperty("startDate") LocalDateTime beginTime, @JsonbProperty("endDate") LocalDateTime endTime) {
         this.clientId = clientId;
-        this.roomUuid = roomUuid;
+        this.roomId = roomId;
         this.beginTime = beginTime;
         this.endTime = endTime;
     }

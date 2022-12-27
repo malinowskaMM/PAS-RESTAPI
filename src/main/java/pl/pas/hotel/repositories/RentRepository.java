@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface RentRepository {
-    UUID createRent(LocalDateTime beginTime, LocalDateTime endTime, Client client, Room room);
+    Rent createRent(LocalDateTime beginTime, LocalDateTime endTime, Client client, Room room);
     void removeRent(UUID id);
     void endRent(UUID id);
     List<Rent> getRentsByClient(UUID clientId);

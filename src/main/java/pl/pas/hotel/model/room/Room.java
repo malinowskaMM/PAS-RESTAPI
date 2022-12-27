@@ -8,7 +8,7 @@ import java.util.UUID;
 @Getter
 public class Room implements Serializable {
 
-    private UUID roomId;
+    private UUID uuid;
     private Integer roomNumber;
     private Double price;
     private Integer roomCapacity;
@@ -26,7 +26,7 @@ public class Room implements Serializable {
     }
 
     public Room(Integer roomNumber, Double price, Integer roomCapacity) {
-        this.roomId = UUID.randomUUID();
+        this.uuid = UUID.randomUUID();
         this.roomNumber = roomNumber;
         this.price = price;
         this.roomCapacity = roomCapacity;

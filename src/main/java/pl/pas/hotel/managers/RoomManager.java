@@ -33,7 +33,7 @@ public class RoomManager {
         if (room1 == null) {
             throw new RoomWithGivenIdNotFound("Cannot delete room");
         } else {
-            roomRepository.deleteRoom(room1.getRoomId());
+            roomRepository.deleteRoom(room1.getUuid());
         }
 
     }

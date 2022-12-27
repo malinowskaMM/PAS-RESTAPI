@@ -55,7 +55,7 @@ public class RoomRepository implements pl.pas.hotel.repositories.RoomRepository 
 
     @Override
     public Room getRoomById(UUID id) {
-        Optional<Room> roomOptional = rooms.stream().filter(room -> room.getRoomId().equals(id)).findFirst();
+        Optional<Room> roomOptional = rooms.stream().filter(room -> room.getUuid().equals(id)).findFirst();
         return roomOptional.orElse(null);
     }
 }

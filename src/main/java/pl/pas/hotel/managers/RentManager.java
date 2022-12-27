@@ -30,13 +30,12 @@ public class RentManager {
     public Rent rentRoom(Client client, Room room, LocalDateTime beginTime, LocalDateTime endTime) throws RoomNotAvailable, RentValidationFailed, DateTimeValidationFailed {
         if (validator.validate(client).isEmpty() && validator.validate(room).isEmpty()) {
             if (beginTime.isBefore(endTime)) {
-                    final List<Rent> rents = rentRepository.getCurrentRentsByRoom(room.getRoomId(), beginTime, endTime);
-                    if (rents.isEmpty()) {
-                        final UUID rentId = rentRepository.createRent(beginTime, endTime, client, room);
-                        return rentRepository.getRentById(rentId);
-                    } else {
-                        throw new RoomNotAvailable("Room is not available");
-                    }
+                    //final List<Rent> rents = rentRepository.getCurrentRentsByRoom(room.getUuid(), beginTime, endTime);
+                    //if (rents.isEmpty()) {
+                        return rentRepository.createRent(beginTime, endTime, client, room);
+                    //} else {
+                    //    throw new RoomNotAvailable("Room is not available");
+                    //}
             } else {
                 throw new DateTimeValidationFailed("Begin time of reservation is not earlier than end time of reservation");
             }

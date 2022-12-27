@@ -26,7 +26,6 @@ public class RoomTest {
                 post("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rooms").
                 then().statusCode(200)
                 .extract().path("roomId");
-
     }
 
     @Test
