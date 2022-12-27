@@ -9,7 +9,6 @@ import jakarta.ws.rs.core.Response;
 import pl.pas.hotel.dto.user.AdminDto;
 import pl.pas.hotel.dto.user.ClientDto;
 import pl.pas.hotel.dto.user.ManagerDto;
-import pl.pas.hotel.dto.user.UserDto;
 import pl.pas.hotel.dto.user.mapper.UserDtoMapper;
 import pl.pas.hotel.exceptions.*;
 import pl.pas.hotel.managers.UserManager;

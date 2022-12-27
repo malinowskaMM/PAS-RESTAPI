@@ -13,7 +13,6 @@ import pl.pas.hotel.repositoriesImplementation.RentRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Stateless
 public class RentManager {
@@ -70,11 +69,11 @@ public class RentManager {
     }
 
     public List<Rent> getRentsByStartDate(LocalDateTime startDate) {
-        return rentRepository.getRents().stream().filter(rent -> rent.getBeginTime().isEqual(startDate)).collect(Collectors.toList());
+        return rentRepository.getRents().stream().filter(rent -> rent.getBeginTime().isEqual(startDate)).toList();
     }
 
     public List<Rent> getRentsByEndDate(LocalDateTime endDate) {
-        return rentRepository.getRents().stream().filter(rent -> rent.getEndTime().isEqual(endDate)).collect(Collectors.toList());
+        return rentRepository.getRents().stream().filter(rent -> rent.getEndTime().isEqual(endDate)).toList();
     }
 
     public Rent getRent(UUID id) throws RentWithGivenIdNotFound {

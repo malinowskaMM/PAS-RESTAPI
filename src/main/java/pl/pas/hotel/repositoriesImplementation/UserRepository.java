@@ -56,7 +56,6 @@ public class UserRepository implements pl.pas.hotel.repositories.UserRepository 
         User user = getUserById(id);
         if(user != null) {
             if(user instanceof Client client && accessLevel.getAccessLevel().equals(AccessLevel.CLIENT.name())) {
-                System.out.println("jestem");
                 client.setFirstName(firstName);
                 client.setLastName(lastName);
                 client.setAddress(address);
