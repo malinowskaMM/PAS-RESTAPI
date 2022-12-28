@@ -47,16 +47,18 @@ public class RentResource {
 
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/startDate")
-    public Response getRentsByStartDate(LocalDateTime startDate) {
-        return Response.ok().entity(rentManager.getRentsByStartDate(startDate)).build();
+    @Path("/startDate/{startDate}")
+    public Response getRentsByStartDate(@PathParam("startDate") String startDate) {
+        LocalDateTime date = LocalDateTime.parse(startDate);
+        return Response.ok().entity(rentManager.getRentsByStartDate(date)).build();
     }
 
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/endDate")
-    public Response getRentsByEndDate(LocalDateTime endDate) {
-        return Response.ok().entity(rentManager.getRentsByStartDate(endDate)).build();
+    @Path("/endDate/{endDate}")
+    public Response getRentsByEndDate(@PathParam("endDate") String endDate) {
+        LocalDateTime date = LocalDateTime.parse(endDate);
+        return Response.ok().entity(rentManager.getRentsByEndDate(date)).build();
     }
 
     @POST
@@ -83,8 +85,7 @@ public class RentResource {
         if(rentManager.getRent(rentId) == null) {
             return Response.status(404).build();
         }
-        rentManager.getRent(rentId);
-        return Response.ok().build();
+        return Response.ok().entity(rentManager.getRent(rentId)).build();
     }
 
     @DELETE

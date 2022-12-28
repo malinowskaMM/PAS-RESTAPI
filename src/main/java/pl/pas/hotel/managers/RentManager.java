@@ -4,6 +4,8 @@ import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.core.Response;
 import pl.pas.hotel.exceptions.*;
 import pl.pas.hotel.model.rent.Rent;
 import pl.pas.hotel.model.room.Room;
@@ -75,10 +77,10 @@ public class RentManager {
         return rentRepository.getRents().stream().filter(rent -> rent.getEndTime().isEqual(endDate)).toList();
     }
 
-    public Rent getRent(UUID id) throws RentWithGivenIdNotFound {
+    public Rent getRent(UUID id) throws NotFoundException {
         final Rent rent = rentRepository.getRentById(id);
         if (rent == null) {
-           throw new RentWithGivenIdNotFound("Cannot found rent with given id");
+            throw new NotFoundException("Cannot find rent with given id");
         }
         return rent;
     }

@@ -98,13 +98,11 @@ public class RentTest {
         assertThat(response.asString()).contains("{\"beginTime\":\"2020-12-10T13:45:00\",\"client\":{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\"exampleUser\",\"password\":\"examplePassword\",\"uuid\":\""+exampleClientUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"},\"endTime\":\"2020-12-15T13:45:00\",\"id\":\""+exampleRentUUID+"\",\"room\":{\"price\":120.0,\"roomCapacity\":2,\"roomNumber\":1,\"uuid\":\""+exampleRoomUUID+"\"}}");
     }
 
-    //nie przechodzi, actual :""
     @Test
     public void testGetRent() {
         assertThat(exampleClientUUID).isNotNull();
         assertThat(exampleRoomUUID).isNotNull();
         assertThat(exampleRentUUID).isNotNull();
-
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents/" + exampleRentUUID);
 
@@ -113,19 +111,35 @@ public class RentTest {
 
     @Test
     public void testDeleteRent() {
-        Response response = RestAssured.given().contentType(ContentType.JSON).
-                when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents");
+        assertThat(exampleRentUUID).isNotNull();
 
-        assertThat(response.asString()).contains("{\"beginTime\":\"2020-12-10T13:45:00\",\"client\":{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\"exampleUser\",\"password\":\"examplePassword\",\"uuid\":\""+exampleClientUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"},\"endTime\":\"2020-12-15T13:45:00\",\"id\":\""+exampleRentUUID+"\",\"room\":{\"price\":120.0,\"roomCapacity\":2,\"roomNumber\":1,\"uuid\":\""+exampleRoomUUID+"\"}}");
+        RestAssured.given().contentType(ContentType.JSON)
+                .when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents/" + exampleRentUUID)
+                .then().statusCode(200);
 
-        Response response1 = RestAssured.given().when().delete("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents/" + exampleRentUUID);
+        RestAssured.given().delete("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents/" + exampleRentUUID)
+                .then().statusCode(200);
+
+        RestAssured.given()
+                .when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents/" + exampleRentUUID)
+                .then().statusCode(404);
     }
 
-    //bad request
     @Test
-    public void testEndDate() {
-        Response response = RestAssured.given().contentType(ContentType.JSON).
-                when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents/endDate");
-        System.out.println(response.asString());
+    public void testGetRentsByStartDate() {
+        String startDate = "2020-12-10T13:45:00";
+        RestAssured.given().contentType(ContentType.JSON).
+                when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents/startDate/" + startDate)
+                .then().statusCode(200);
     }
+
+    @Test
+    public void testGetRentsByEndDate() {
+        String endDate = "2020-12-15T13:45:00";
+        RestAssured.given().contentType(ContentType.JSON).
+                when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents/endDate/" + endDate)
+                .then().statusCode(200);
+    }
+
+
 }
