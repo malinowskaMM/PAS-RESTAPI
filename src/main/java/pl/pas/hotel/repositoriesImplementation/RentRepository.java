@@ -1,6 +1,7 @@
 package pl.pas.hotel.repositoriesImplementation;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import pl.pas.hotel.exceptions.RoomNotAvailable;
 import pl.pas.hotel.model.rent.Rent;
 import pl.pas.hotel.model.room.Room;
 import pl.pas.hotel.model.user.client.Client;
@@ -19,13 +20,13 @@ public class RentRepository implements pl.pas.hotel.repositories.RentRepository 
     private final List<Rent> rents = synchronizedList(new ArrayList<>());
 
     @Override
-    public Rent createRent(LocalDateTime beginTime, LocalDateTime endTime, Client client, Room room) {
-        if(client.isActive() && getCurrentRentsByRoom(room.getUuid(), beginTime, endTime).isEmpty()) {
+    public Rent createRent(LocalDateTime beginTime, LocalDateTime endTime, Client client, Room room) throws RoomNotAvailable {
+        if(getCurrentRentsByRoom(room.getUuid(), beginTime, endTime).isEmpty()) {
             Rent rent = new Rent(beginTime, endTime, client, room);
             rents.add(rent);
             return rent;
         }
-        return null;
+        throw new RoomNotAvailable("Cannot rent room");
     }
 
     @Override

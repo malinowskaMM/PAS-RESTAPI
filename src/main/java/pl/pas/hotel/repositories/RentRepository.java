@@ -1,5 +1,6 @@
 package pl.pas.hotel.repositories;
 
+import pl.pas.hotel.exceptions.RoomNotAvailable;
 import pl.pas.hotel.model.rent.Rent;
 import pl.pas.hotel.model.room.Room;
 import pl.pas.hotel.model.user.client.Client;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface RentRepository {
-    Rent createRent(LocalDateTime beginTime, LocalDateTime endTime, Client client, Room room);
+    Rent createRent(LocalDateTime beginTime, LocalDateTime endTime, Client client, Room room) throws RoomNotAvailable;
     void removeRent(UUID id);
     void endRent(UUID id);
     List<Rent> getRentsByClient(UUID clientId);

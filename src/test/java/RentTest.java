@@ -1,6 +1,7 @@
 import io.restassured.RestAssured;
 import org.json.simple.JSONObject;
 import org.junit.Before;
+import org.junit.Test;
 
 public class RentTest {
 
@@ -53,7 +54,13 @@ public class RentTest {
                 header("Accept","application/json" ).
                 body(createRentRequest.toJSONString()).when().
                 post("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents").
-                then().statusCode(200);
+                then().statusCode(200)
+                .extract().path("id");
+    }
+
+    @Test
+    public void test() {
+
     }
 
 
