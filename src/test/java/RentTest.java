@@ -1,7 +1,11 @@
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RentTest {
 
@@ -49,7 +53,7 @@ public class RentTest {
         createRentRequest.put("startDate", "2020-12-10T13:45:00.000");
         createRentRequest.put("endDate", "2020-12-15T13:45:00.000");
 
-        RestAssured.given().
+        exampleRentUUID = RestAssured.given().
                 header("Content-Type","application/json" ).
                 header("Accept","application/json" ).
                 body(createRentRequest.toJSONString()).when().
@@ -59,9 +63,69 @@ public class RentTest {
     }
 
     @Test
-    public void test() {
+    public void testRentsByClientUUID() {
+        assertThat(exampleClientUUID).isNotNull();
+        assertThat(exampleRoomUUID).isNotNull();
+        assertThat(exampleRentUUID).isNotNull();
 
+        Response response = RestAssured.given().contentType(ContentType.JSON).
+                when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents/client/" + exampleClientUUID);
+
+        assertThat(response.asString()).isEqualTo("[{\"beginTime\":\"2020-12-10T13:45:00\",\"client\":{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\"exampleUser\",\"password\":\"examplePassword\",\"uuid\":\""+exampleClientUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"},\"endTime\":\"2020-12-15T13:45:00\",\"id\":\""+exampleRentUUID+"\",\"room\":{\"price\":120.0,\"roomCapacity\":2,\"roomNumber\":1,\"uuid\":\""+exampleRoomUUID+"\"}}]");
     }
 
+    @Test
+    public void testRentsByRoomUUID() {
+        assertThat(exampleClientUUID).isNotNull();
+        assertThat(exampleRoomUUID).isNotNull();
+        assertThat(exampleRentUUID).isNotNull();
 
+        Response response = RestAssured.given().contentType(ContentType.JSON).
+                when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents/room/" + exampleRoomUUID);
+
+        assertThat(response.asString()).isEqualTo("[{\"beginTime\":\"2020-12-10T13:45:00\",\"client\":{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\"exampleUser\",\"password\":\"examplePassword\",\"uuid\":\""+exampleClientUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"},\"endTime\":\"2020-12-15T13:45:00\",\"id\":\""+exampleRentUUID+"\",\"room\":{\"price\":120.0,\"roomCapacity\":2,\"roomNumber\":1,\"uuid\":\""+exampleRoomUUID+"\"}}]");
+    }
+
+    @Test
+    public void testCreateRent(){
+        assertThat(exampleClientUUID).isNotNull();
+        assertThat(exampleRoomUUID).isNotNull();
+        assertThat(exampleRentUUID).isNotNull();
+
+        Response response = RestAssured.given().contentType(ContentType.JSON).
+                when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents");
+
+        assertThat(response.asString()).contains("{\"beginTime\":\"2020-12-10T13:45:00\",\"client\":{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\"exampleUser\",\"password\":\"examplePassword\",\"uuid\":\""+exampleClientUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"},\"endTime\":\"2020-12-15T13:45:00\",\"id\":\""+exampleRentUUID+"\",\"room\":{\"price\":120.0,\"roomCapacity\":2,\"roomNumber\":1,\"uuid\":\""+exampleRoomUUID+"\"}}");
+    }
+
+    //nie przechodzi, actual :""
+    @Test
+    public void testGetRent() {
+        assertThat(exampleClientUUID).isNotNull();
+        assertThat(exampleRoomUUID).isNotNull();
+        assertThat(exampleRentUUID).isNotNull();
+
+        Response response = RestAssured.given().contentType(ContentType.JSON).
+                when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents/" + exampleRentUUID);
+
+        assertThat(response.asString()).isEqualTo("{\"beginTime\":\"2020-12-10T13:45:00\",\"client\":{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\"exampleUser\",\"password\":\"examplePassword\",\"uuid\":\""+exampleClientUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"},\"endTime\":\"2020-12-15T13:45:00\",\"id\":\""+exampleRentUUID+"\",\"room\":{\"price\":120.0,\"roomCapacity\":2,\"roomNumber\":1,\"uuid\":\""+exampleRoomUUID+"\"}}");
+    }
+
+    @Test
+    public void testDeleteRent() {
+        Response response = RestAssured.given().contentType(ContentType.JSON).
+                when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents");
+
+        assertThat(response.asString()).contains("{\"beginTime\":\"2020-12-10T13:45:00\",\"client\":{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\"exampleUser\",\"password\":\"examplePassword\",\"uuid\":\""+exampleClientUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"},\"endTime\":\"2020-12-15T13:45:00\",\"id\":\""+exampleRentUUID+"\",\"room\":{\"price\":120.0,\"roomCapacity\":2,\"roomNumber\":1,\"uuid\":\""+exampleRoomUUID+"\"}}");
+
+        Response response1 = RestAssured.given().when().delete("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents/" + exampleRentUUID);
+    }
+
+    //bad request
+    @Test
+    public void testEndDate() {
+        Response response = RestAssured.given().contentType(ContentType.JSON).
+                when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents/endDate");
+        System.out.println(response.asString());
+    }
 }
