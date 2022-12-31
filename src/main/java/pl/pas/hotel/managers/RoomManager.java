@@ -63,5 +63,9 @@ public class RoomManager {
         return roomRepository.getRooms();
     }
 
+    public List<Room> getFreeRooms() {
+        return getRooms(room -> !room.isRented());
+    }
+
 
 }

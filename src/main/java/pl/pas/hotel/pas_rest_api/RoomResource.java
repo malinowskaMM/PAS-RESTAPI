@@ -31,6 +31,14 @@ public class RoomResource {
         return Response.ok().entity(roomManager.getAllRooms()).build();
     }
 
+    @GET
+    @Path("/free")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getFreeRooms() {
+        return Response.ok().entity(roomManager.getFreeRooms()).build();
+    }
+
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createRoom(@Valid RoomDto roomDto) throws RoomValidationFailed {

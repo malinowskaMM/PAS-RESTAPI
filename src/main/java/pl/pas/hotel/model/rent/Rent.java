@@ -10,6 +10,7 @@ import java.util.UUID;
 
 @Getter
 public class Rent implements Serializable {
+
     UUID id;
     LocalDateTime beginTime;
     LocalDateTime endTime;

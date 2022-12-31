@@ -50,6 +50,7 @@ public class RentManager {
         final Rent rent = rentRepository.getRentById(id);
         if (rent != null) {
             rentRepository.endRent(id);
+            rent.getRoom().setRented(true);
         } else {
             throw new RentWithGivenIdNotFound("Cannot found rent with given id");
         }

@@ -13,6 +13,8 @@ public class Room implements Serializable {
     private Double price;
     private Integer roomCapacity;
 
+    private boolean isRented;
+
     public void setRoomNumber(Integer roomNumber) {
         this.roomNumber = roomNumber;
     }
@@ -25,10 +27,15 @@ public class Room implements Serializable {
         this.roomCapacity = roomCapacity;
     }
 
+    public void setRented(boolean rented) {
+        isRented = rented;
+    }
+
     public Room(Integer roomNumber, Double price, Integer roomCapacity) {
         this.uuid = UUID.randomUUID();
         this.roomNumber = roomNumber;
         this.price = price;
         this.roomCapacity = roomCapacity;
+        this.isRented = false;
     }
 }
