@@ -78,7 +78,7 @@ public class UserTest {
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/" + exampleUUID);
 
-        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\""+uniqueClientLogin+"\",\"password\":\"examplePassword\",\"uuid\":\""+exampleUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
+        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":true,\"login\":\""+uniqueClientLogin+"\",\"password\":\"examplePassword\",\"uuid\":\""+exampleUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
     }
 
     @Test
@@ -108,7 +108,7 @@ public class UserTest {
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/" + exampleUUID);
 
-        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\""+uniqueClientLogin+"\",\"password\":\"examplePassword\",\"uuid\":\""+exampleUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
+        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":true,\"login\":\""+uniqueClientLogin+"\",\"password\":\"examplePassword\",\"uuid\":\""+exampleUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
 
         JSONObject changeClientRequest = new JSONObject();
         changeClientRequest.put("login", "exampleUser");
@@ -128,7 +128,7 @@ public class UserTest {
         Response response2 = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/" + exampleUUID);
 
-        assertThat(response2.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\"exampleUser\",\"password\":\"examplePassword\",\"uuid\":\""+exampleUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Nowak\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
+        assertThat(response2.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":true,\"login\":\"exampleUser\",\"password\":\"examplePassword\",\"uuid\":\""+exampleUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Nowak\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
     }
 
     @Test
@@ -136,7 +136,7 @@ public class UserTest {
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/" + exampleUUID);
 
-        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\""+uniqueClientLogin+"\",\"password\":\"examplePassword\",\"uuid\":\""+exampleUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
+        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":true,\"login\":\""+uniqueClientLogin+"\",\"password\":\"examplePassword\",\"uuid\":\""+exampleUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
 
         RestAssured.given().when().delete("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/" + exampleUUID);
 
@@ -175,7 +175,7 @@ public class UserTest {
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/"+uuid);
 
-        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\""+inTestUniqueClientLogin+"\",\"password\":\"examplePassword\",\"uuid\":\""+uuid+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
+        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":true,\"login\":\""+inTestUniqueClientLogin+"\",\"password\":\"examplePassword\",\"uuid\":\""+uuid+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
     }
 
     @Test
@@ -287,7 +287,7 @@ public class UserTest {
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/" + exampleUUID);
 
-        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\""+uniqueClientLogin+"\",\"password\":\"examplePassword\",\"uuid\":\""+exampleUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
+        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":true,\"login\":\""+uniqueClientLogin+"\",\"password\":\"examplePassword\",\"uuid\":\""+exampleUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
 
         RestAssured.given().contentType(ContentType.JSON).
                 when().put("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/client/activate/" + exampleUUID);

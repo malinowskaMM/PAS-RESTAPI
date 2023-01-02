@@ -21,7 +21,7 @@ public class RentDto {
 
     @AssertTrue
     private boolean isEndTimeAfterBeginTime() {
-        return endTime.isAfter(beginTime);
+        return this.endTime.isAfter(this.beginTime);
     }
 
     @FutureOrPresent
@@ -34,10 +34,10 @@ public class RentDto {
 
     @JsonbCreator
     public RentDto(@JsonbProperty("clientId")String clientId, @JsonbProperty("roomId")String roomId, @JsonbProperty("startDate") LocalDateTime beginTime, @JsonbProperty("endDate") LocalDateTime endTime) {
-        isEndTimeAfterBeginTime();
         this.clientId = clientId;
         this.roomId = roomId;
         this.beginTime = beginTime;
         this.endTime = endTime;
+        isEndTimeAfterBeginTime();
     }
 }

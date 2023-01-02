@@ -5,7 +5,6 @@ import jakarta.inject.Inject;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.ws.rs.NotFoundException;
-import jakarta.ws.rs.core.Response;
 import pl.pas.hotel.exceptions.*;
 import pl.pas.hotel.model.rent.Rent;
 import pl.pas.hotel.model.room.Room;

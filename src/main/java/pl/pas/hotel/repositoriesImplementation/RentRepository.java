@@ -56,10 +56,13 @@ public class RentRepository implements pl.pas.hotel.repositories.RentRepository 
     }
 
 
-    //TODO:implementation method
     @Override
     public List<Rent> getCurrentRentsByRoom(UUID roomId, LocalDateTime beginTime, LocalDateTime endTime) {
-        return getRentsByRoom(roomId);
+        return getRentsByRoom(roomId).stream().filter(
+                rent -> ((rent.getBeginTime().isBefore(beginTime) && rent.getEndTime().isBefore(endTime) && rent.getEndTime().isAfter(beginTime))
+                || (rent.getBeginTime().isAfter(beginTime) && rent.getEndTime().isBefore(endTime))
+                || (rent.getBeginTime().isAfter(beginTime) && rent.getBeginTime().isBefore(endTime) && rent.getEndTime().isAfter(endTime))
+        )).toList();
     }
 
     @Override
