@@ -20,25 +20,38 @@ public class UserRepository implements pl.pas.hotel.repositories.UserRepository 
 
     private final List<User> users = synchronizedList(new ArrayList<>());
 
+    boolean isLoginUnique(String login) {
+        return users.stream().filter(user -> user.getLogin().equals(login)).toList().isEmpty();
+    }
+
     @Override
     public Client createClient(String personalId, String firstName, String lastName, String address, String login, String password, AccessLevel accessLevel) {
-        Client client = new Client(personalId, firstName, lastName, address, login, password, accessLevel);
-        users.add(client);
-        return client;
+        if(isLoginUnique(login)) {
+            Client client = new Client(personalId, firstName, lastName, address, login, password, accessLevel);
+            users.add(client);
+            return client;
+        }
+        return null;
     }
 
     @Override
     public Admin createAdmin(String login, String password, AccessLevel accessLevel) {
-        Admin admin = new Admin(login, password, accessLevel);
-        users.add(admin);
-        return admin;
+        if(isLoginUnique(login)) {
+            Admin admin = new Admin(login, password, accessLevel);
+            users.add(admin);
+            return admin;
+        }
+        return null;
     }
 
     @Override
     public Manager createManager(String login, String password, AccessLevel accessLevel) {
-        Manager manager = new Manager(login, password, accessLevel);
-        users.add(manager);
-        return manager;
+        if(isLoginUnique(login)) {
+            Manager manager = new Manager(login, password, accessLevel);
+            users.add(manager);
+            return manager;
+        }
+        return null;
     }
 
     @Override

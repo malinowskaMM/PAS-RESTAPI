@@ -42,7 +42,7 @@ public class RoomResource {
     @DELETE
     @Path("/{uuid}")
     public Response deleteRoom(@PathParam("uuid") UUID roomId) throws RoomWithGivenIdNotFound {
-        if(roomManager.getRoomById(roomId.toString()) == null) {
+        if(roomManager.getRoomById(roomId) == null) {
             return Response.status(404).build();
         }
         roomManager.removeRoom(roomId);
@@ -52,17 +52,17 @@ public class RoomResource {
     @GET
     @Path("/{uuid}")
     public Response getRoom(@PathParam("uuid") UUID roomId) throws RoomWithGivenIdNotFound {
-        if(roomManager.getRoomById(roomId.toString()) == null) {
+        if(roomManager.getRoomById(roomId) == null) {
             return Response.status(404).build();
         }
-        return Response.ok().entity(roomManager.getRoomById(roomId.toString())).build();
+        return Response.ok().entity(roomManager.getRoomById(roomId)).build();
     }
 
     @PUT
     @Path("/{uuid}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateRoom(@PathParam("uuid") UUID roomId, RoomDto roomDto) throws RoomWithGivenIdNotFound {
-        if(roomManager.getRoomById(roomId.toString()) == null) {
+        if(roomManager.getRoomById(roomId) == null) {
             return Response.status(404).build();
         }
         Room room = roomDtoMapper.toRoom(roomDto);

@@ -1,6 +1,8 @@
 package pl.pas.hotel.exceptions;
 
-public class RoomWithGivenIdNotFound extends Exception{
+import jakarta.ws.rs.NotFoundException;
+
+public class RoomWithGivenIdNotFound extends NotFoundException {
     public RoomWithGivenIdNotFound(String message) {
         super(message);
     }

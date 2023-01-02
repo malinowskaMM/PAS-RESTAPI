@@ -32,12 +32,12 @@ public class RentManager {
     public Rent rentRoom(Client client, Room room, LocalDateTime beginTime, LocalDateTime endTime) throws RoomNotAvailable, RentValidationFailed, DateTimeValidationFailed {
         if (validator.validate(client).isEmpty() && validator.validate(room).isEmpty()) {
             if (beginTime.isBefore(endTime)) {
-                    //final List<Rent> rents = rentRepository.getCurrentRentsByRoom(room.getUuid(), beginTime, endTime);
-                    //if (rents.isEmpty()) {
+                    final List<Rent> rents = rentRepository.getCurrentRentsByRoom(room.getUuid(), beginTime, endTime);
+                    if (rents.isEmpty() && client.isActive()) {
                         return rentRepository.createRent(beginTime, endTime, client, room);
-                    //} else {
-                    //    throw new RoomNotAvailable("Room is not available");
-                    //}
+                    } else {
+                        throw new RoomNotAvailable("Room is not available");
+                    }
             } else {
                 throw new DateTimeValidationFailed("Begin time of reservation is not earlier than end time of reservation");
             }
@@ -65,7 +65,7 @@ public class RentManager {
     }
 
     public List<Rent> getRentsByRoomId(UUID roomId) throws RoomWithGivenIdNotFound {
-        roomManager.getRoomById(roomId.toString());
+        roomManager.getRoomById(roomId);
         return rentRepository.getRentsByRoom(roomId);
     }
 
@@ -86,7 +86,10 @@ public class RentManager {
     }
 
     public void removeRent(UUID rentId) throws RentWithGivenIdNotFound {
-        rentRepository.removeRent(getRent(rentId).getId());
+        Rent rent = getRent(rentId);
+        if(rent.getEndTime().isAfter(LocalDateTime.now())) {
+            rentRepository.removeRent(getRent(rentId).getId());
+        }
     }
 
 }

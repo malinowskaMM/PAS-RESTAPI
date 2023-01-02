@@ -21,7 +21,7 @@ public class Client extends User {
     private Double moneySpent;
 
     public Client(String personalId, String firstName, String lastName, String address, String login, String password, AccessLevel accessLevel) {
-        super(false, login, password, accessLevel);
+        super(true, login, password, accessLevel);
         this.personalId = personalId;
         this.firstName = firstName;
         this.lastName = lastName;

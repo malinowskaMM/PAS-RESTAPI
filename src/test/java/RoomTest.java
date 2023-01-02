@@ -25,7 +25,7 @@ public class RoomTest {
                 body(createRoomRequest.toJSONString()).when().
                 post("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rooms").
                 then().statusCode(200)
-                .extract().path("roomId");
+                .extract().path("uuid");
     }
 
     @Test
@@ -44,12 +44,12 @@ public class RoomTest {
                 .body("roomNumber", equalTo(1))
                 .body("price", equalTo(120.0F))
                 .body("roomCapacity", equalTo(2))
-                .extract().path("roomId");
+                .extract().path("uuid");
 
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rooms/"+uuid);
 
-        assertThat(response.asString()).isEqualTo("{\"price\":120.0,\"roomCapacity\":2,\"roomId\":\""+uuid+"\",\"roomNumber\":1}");
+        assertThat(response.asString()).isEqualTo("{\"price\":120.0,\"roomCapacity\":2,\"roomNumber\":1,\"uuid\":\""+uuid+"\"}");
     }
 
     @Test
@@ -74,7 +74,7 @@ public class RoomTest {
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rooms/"+exampleUUID);
 
-        assertThat(response.asString()).isEqualTo("{\"price\":120.0,\"roomCapacity\":2,\"roomId\":\""+exampleUUID+"\",\"roomNumber\":1}");
+        assertThat(response.asString()).isEqualTo("{\"price\":120.0,\"roomCapacity\":2,\"roomNumber\":1,\"uuid\":\""+exampleUUID+"\"}");
 
         JSONObject createRoomRequest = new JSONObject();
         createRoomRequest.put("roomNumber", 1);
@@ -91,7 +91,7 @@ public class RoomTest {
         response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rooms/"+exampleUUID);
 
-        assertThat(response.asString()).isEqualTo("{\"price\":1200.0,\"roomCapacity\":2,\"roomId\":\""+exampleUUID+"\",\"roomNumber\":1}");
+        assertThat(response.asString()).isEqualTo("{\"price\":1200.0,\"roomCapacity\":2,\"roomNumber\":1,\"uuid\":\""+exampleUUID+"\"}");
     }
 
     @Test
@@ -102,7 +102,7 @@ public class RoomTest {
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rooms/"+exampleUUID);
 
-        assertThat(response.asString()).isEqualTo("{\"price\":120.0,\"roomCapacity\":2,\"roomId\":\""+exampleUUID+"\",\"roomNumber\":1}");
+        assertThat(response.asString()).isEqualTo("{\"price\":120.0,\"roomCapacity\":2,\"roomNumber\":1,\"uuid\":\""+exampleUUID+"\"}");
     }
 
 

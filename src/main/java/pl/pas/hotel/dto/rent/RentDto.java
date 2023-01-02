@@ -24,16 +24,17 @@ public class RentDto {
         return endTime.isAfter(beginTime);
     }
 
-    //@FutureOrPresent
+    @FutureOrPresent
     @NotNull
     LocalDateTime beginTime;
 
-    //@FutureOrPresent
+    @FutureOrPresent
     @NotNull
     LocalDateTime endTime;
 
     @JsonbCreator
     public RentDto(@JsonbProperty("clientId")String clientId, @JsonbProperty("roomId")String roomId, @JsonbProperty("startDate") LocalDateTime beginTime, @JsonbProperty("endDate") LocalDateTime endTime) {
+        isEndTimeAfterBeginTime();
         this.clientId = clientId;
         this.roomId = roomId;
         this.beginTime = beginTime;

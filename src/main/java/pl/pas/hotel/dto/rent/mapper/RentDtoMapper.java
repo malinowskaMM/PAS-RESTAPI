@@ -13,6 +13,8 @@ import pl.pas.hotel.model.rent.Rent;
 import pl.pas.hotel.model.room.Room;
 import pl.pas.hotel.model.user.client.Client;
 
+import java.util.UUID;
+
 
 @NoArgsConstructor
 @Stateless
@@ -26,7 +28,7 @@ public class RentDtoMapper {
 
     public Rent toRent(RentDto rentDto) throws RoomWithGivenIdNotFound, ClientWithGivenIdNotFound {
         Client client = userManager.getClientById(rentDto.getClientId());
-        Room room = roomManager.getRoomById(rentDto.getRoomId());
+        Room room = roomManager.getRoomById(UUID.fromString(rentDto.getRoomId()));
 
         return new Rent(rentDto.getBeginTime(), rentDto.getEndTime(), client, room);
     }

@@ -1,6 +1,8 @@
 package pl.pas.hotel.exceptions;
 
-public class ClientValidationFailed extends Exception{
+import jakarta.validation.ValidationException;
+
+public class ClientValidationFailed extends ValidationException {
     public ClientValidationFailed(String message) {
         super(message);
     }

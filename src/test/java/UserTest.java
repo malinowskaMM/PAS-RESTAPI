@@ -5,6 +5,8 @@ import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -13,11 +15,15 @@ public class UserTest {
     String exampleUUID;
     String adminExampleUUID;
     String managerExampleUUID;
+    String uniqueManagerLogin;
+    String uniqueClientLogin;
+    String uniqueAdminLogin;
 
     @Before
     public void initialize() {
         JSONObject createClientRequest = new JSONObject();
-        createClientRequest.put("login", "exampleUser");
+        uniqueClientLogin = generateRandomLogin();
+        createClientRequest.put("login", uniqueClientLogin);
         createClientRequest.put("password", "examplePassword");
         createClientRequest.put("accessLevel", "CLIENT");
         createClientRequest.put("personalId", "12345678910");
@@ -35,7 +41,8 @@ public class UserTest {
 
 
         JSONObject createAdminRequest = new JSONObject();
-        createAdminRequest.put("login", "exampleUserAdmin");
+        uniqueAdminLogin = generateRandomLogin();
+        createAdminRequest.put("login", uniqueAdminLogin);
         createAdminRequest.put("password", "examplePasswordAdmin");
         createAdminRequest.put("accessLevel", "ADMIN");
 
@@ -49,7 +56,8 @@ public class UserTest {
 
 
         JSONObject createManagerRequest = new JSONObject();
-        createManagerRequest.put("login", "exampleUserManager");
+        uniqueManagerLogin = generateRandomLogin();
+        createManagerRequest.put("login", uniqueManagerLogin);
         createManagerRequest.put("password", "examplePasswordManager");
         createManagerRequest.put("accessLevel", "MANAGER");
 
@@ -70,7 +78,7 @@ public class UserTest {
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/" + exampleUUID);
 
-        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\"exampleUser\",\"password\":\"examplePassword\",\"uuid\":\""+exampleUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
+        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\""+uniqueClientLogin+"\",\"password\":\"examplePassword\",\"uuid\":\""+exampleUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
     }
 
     @Test
@@ -81,7 +89,7 @@ public class UserTest {
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/" + adminExampleUUID);
 
-        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"ADMIN\",\"active\":true,\"login\":\"exampleUserAdmin\",\"password\":\"examplePasswordAdmin\",\"uuid\":\""+adminExampleUUID+"\"}");
+        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"ADMIN\",\"active\":true,\"login\":\""+uniqueAdminLogin+"\",\"password\":\"examplePasswordAdmin\",\"uuid\":\""+adminExampleUUID+"\"}");
     }
 
     @Test
@@ -92,7 +100,7 @@ public class UserTest {
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/" + managerExampleUUID);
 
-        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"MANAGER\",\"active\":true,\"login\":\"exampleUserManager\",\"password\":\"examplePasswordManager\",\"uuid\":\""+managerExampleUUID+"\"}");
+        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"MANAGER\",\"active\":true,\"login\":\""+uniqueManagerLogin+"\",\"password\":\"examplePasswordManager\",\"uuid\":\""+managerExampleUUID+"\"}");
     }
 
     @Test
@@ -100,7 +108,7 @@ public class UserTest {
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/" + exampleUUID);
 
-        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\"exampleUser\",\"password\":\"examplePassword\",\"uuid\":\""+exampleUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
+        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\""+uniqueClientLogin+"\",\"password\":\"examplePassword\",\"uuid\":\""+exampleUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
 
         JSONObject changeClientRequest = new JSONObject();
         changeClientRequest.put("login", "exampleUser");
@@ -128,7 +136,7 @@ public class UserTest {
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/" + exampleUUID);
 
-        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\"exampleUser\",\"password\":\"examplePassword\",\"uuid\":\""+exampleUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
+        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\""+uniqueClientLogin+"\",\"password\":\"examplePassword\",\"uuid\":\""+exampleUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
 
         RestAssured.given().when().delete("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/" + exampleUUID);
 
@@ -140,7 +148,8 @@ public class UserTest {
     @Test
     public void shouldCreateClient() {
         JSONObject createClientRequest = new JSONObject();
-        createClientRequest.put("login", "exampleUser");
+        String inTestUniqueClientLogin = generateRandomLogin();
+        createClientRequest.put("login", inTestUniqueClientLogin);
         createClientRequest.put("password", "examplePassword");
         createClientRequest.put("accessLevel", "CLIENT");
         createClientRequest.put("personalId", "12345678910");
@@ -154,7 +163,7 @@ public class UserTest {
                 body(createClientRequest.toJSONString()).when().
                 post("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/client").
                 then().statusCode(200)
-                .body("login", equalTo("exampleUser"))
+                .body("login", equalTo(inTestUniqueClientLogin))
                 .body("password", equalTo("examplePassword"))
                 .body("accessLevel", equalTo("CLIENT"))
                 .body("personalId", equalTo("12345678910"))
@@ -166,13 +175,14 @@ public class UserTest {
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/"+uuid);
 
-        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\"exampleUser\",\"password\":\"examplePassword\",\"uuid\":\""+uuid+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
+        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\""+inTestUniqueClientLogin+"\",\"password\":\"examplePassword\",\"uuid\":\""+uuid+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
     }
 
     @Test
     public void shouldCreateManager() {
         JSONObject createManagerRequest = new JSONObject();
-        createManagerRequest.put("login", "exampleUserManager");
+        String inTestUniqueManagerLogin = generateRandomLogin();
+        createManagerRequest.put("login", inTestUniqueManagerLogin);
         createManagerRequest.put("password", "examplePassword");
         createManagerRequest.put("accessLevel", "MANAGER");
 
@@ -182,7 +192,7 @@ public class UserTest {
                 body(createManagerRequest.toJSONString()).when().
                 post("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/manager").
                 then().statusCode(200)
-                .body("login", equalTo("exampleUserManager"))
+                .body("login", equalTo(inTestUniqueManagerLogin))
                 .body("password", equalTo("examplePassword"))
                 .body("accessLevel", equalTo("MANAGER"))
                 .extract().path("uuid");
@@ -190,7 +200,7 @@ public class UserTest {
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/"+uuid);
 
-        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"MANAGER\",\"active\":true,\"login\":\"exampleUserManager\",\"password\":\"examplePassword\",\"uuid\":\""+uuid+"\"}");
+        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"MANAGER\",\"active\":true,\"login\":\""+inTestUniqueManagerLogin+"\",\"password\":\"examplePassword\",\"uuid\":\""+uuid+"\"}");
     }
 
     @Test
@@ -198,29 +208,32 @@ public class UserTest {
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/" + managerExampleUUID);
 
-        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"MANAGER\",\"active\":true,\"login\":\"exampleUserManager\",\"password\":\"examplePasswordManager\",\"uuid\":\""+managerExampleUUID+"\"}");
+        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"MANAGER\",\"active\":true,\"login\":\""+uniqueManagerLogin+"\",\"password\":\"examplePasswordManager\",\"uuid\":\""+managerExampleUUID+"\"}");
 
-        JSONObject upadateManagerRequest = new JSONObject();
-        upadateManagerRequest.put("login", "exampleUserManagerUpdate");
-        upadateManagerRequest.put("password", "examplePasswordManagerUpdate");
-        upadateManagerRequest.put("accessLevel", "MANAGER");
+        JSONObject updateManagerRequest = new JSONObject();
+        String inTestUniqueManagerLogin = generateRandomLogin();
+        updateManagerRequest.put("login", inTestUniqueManagerLogin);
+        updateManagerRequest.put("password", "examplePasswordManagerUpdate");
+        updateManagerRequest.put("accessLevel", "MANAGER");
 
         RestAssured.given().contentType(ContentType.JSON).
                 header("Content-Type","application/json" ).
                 header("Accept","application/json" ).
-                body(upadateManagerRequest).
+                body(updateManagerRequest).
                 when().put("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/manager/" + managerExampleUUID);
 
         Response response2 = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/" + managerExampleUUID);
 
-        assertThat(response2.asString()).isEqualTo("{\"accessLevel\":\"MANAGER\",\"active\":true,\"login\":\"exampleUserManagerUpdate\",\"password\":\"examplePasswordManagerUpdate\",\"uuid\":\""+managerExampleUUID+"\"}");
+        assertThat(response2.asString()).isEqualTo("{\"accessLevel\":\"MANAGER\",\"active\":true,\"login\":\""+inTestUniqueManagerLogin+"\",\"password\":\"examplePasswordManagerUpdate\",\"uuid\":\""+managerExampleUUID+"\"}");
     }
+
 
     @Test
     public void shouldCreateAdmin() {
         JSONObject createAdminRequest = new JSONObject();
-        createAdminRequest.put("login", "exampleUserAdmin");
+        String inTestUniqueAdminLogin = generateRandomLogin();
+        createAdminRequest.put("login", inTestUniqueAdminLogin);
         createAdminRequest.put("password", "examplePassword");
         createAdminRequest.put("accessLevel", "ADMIN");
 
@@ -230,7 +243,7 @@ public class UserTest {
                 body(createAdminRequest.toJSONString()).when().
                 post("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/admin").
                 then().statusCode(200)
-                .body("login", equalTo("exampleUserAdmin"))
+                .body("login", equalTo(inTestUniqueAdminLogin))
                 .body("password", equalTo("examplePassword"))
                 .body("accessLevel", equalTo("ADMIN"))
                 .extract().path("uuid");
@@ -238,7 +251,7 @@ public class UserTest {
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/"+uuid);
 
-        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"ADMIN\",\"active\":true,\"login\":\"exampleUserAdmin\",\"password\":\"examplePassword\",\"uuid\":\""+uuid+"\"}");
+        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"ADMIN\",\"active\":true,\"login\":\""+inTestUniqueAdminLogin+"\",\"password\":\"examplePassword\",\"uuid\":\""+uuid+"\"}");
     }
 
     @Test
@@ -246,10 +259,11 @@ public class UserTest {
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/" + adminExampleUUID);
 
-        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"ADMIN\",\"active\":true,\"login\":\"exampleUserAdmin\",\"password\":\"examplePasswordAdmin\",\"uuid\":\""+adminExampleUUID+"\"}");
+        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"ADMIN\",\"active\":true,\"login\":\""+uniqueAdminLogin+"\",\"password\":\"examplePasswordAdmin\",\"uuid\":\""+adminExampleUUID+"\"}");
 
         JSONObject updateAdminRequest = new JSONObject();
-        updateAdminRequest.put("login", "exampleUserAdminUpdate");
+        String inTestUniqueAdminLogin = generateRandomLogin();
+        updateAdminRequest.put("login", inTestUniqueAdminLogin);
         updateAdminRequest.put("password", "examplePasswordAdminUpdate");
         updateAdminRequest.put("accessLevel", "ADMIN");
 
@@ -262,7 +276,7 @@ public class UserTest {
         Response response2 = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/" + adminExampleUUID);
 
-        assertThat(response2.asString()).isEqualTo("{\"accessLevel\":\"ADMIN\",\"active\":true,\"login\":\"exampleUserAdminUpdate\",\"password\":\"examplePasswordAdminUpdate\",\"uuid\":\""+adminExampleUUID+"\"}");
+        assertThat(response2.asString()).isEqualTo("{\"accessLevel\":\"ADMIN\",\"active\":true,\"login\":\""+inTestUniqueAdminLogin+"\",\"password\":\"examplePasswordAdminUpdate\",\"uuid\":\""+adminExampleUUID+"\"}");
     }
 
     @Test
@@ -273,7 +287,7 @@ public class UserTest {
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/" + exampleUUID);
 
-        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\"exampleUser\",\"password\":\"examplePassword\",\"uuid\":\""+exampleUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
+        assertThat(response.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\""+uniqueClientLogin+"\",\"password\":\"examplePassword\",\"uuid\":\""+exampleUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
 
         RestAssured.given().contentType(ContentType.JSON).
                 when().put("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/client/activate/" + exampleUUID);
@@ -281,8 +295,12 @@ public class UserTest {
         Response response1 = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/users/" + exampleUUID);
 
-        assertThat(response1.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":true,\"login\":\"exampleUser\",\"password\":\"examplePassword\",\"uuid\":\""+exampleUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
+        assertThat(response1.asString()).isEqualTo("{\"accessLevel\":\"CLIENT\",\"active\":true,\"login\":\""+uniqueClientLogin+"\",\"password\":\"examplePassword\",\"uuid\":\""+exampleUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"}");
 
+    }
+
+    private String generateRandomLogin() {
+        return "exampleUser".concat(UUID.randomUUID().toString());
     }
 
 }

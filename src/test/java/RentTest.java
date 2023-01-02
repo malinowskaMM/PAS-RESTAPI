@@ -5,6 +5,8 @@ import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RentTest {
@@ -12,6 +14,7 @@ public class RentTest {
     String exampleRoomUUID;
     String exampleClientUUID;
     String exampleRentUUID;
+    String userLogin;
 
     @Before
     public void initialize() {
@@ -30,7 +33,8 @@ public class RentTest {
 
 
         JSONObject createClientRequest = new JSONObject();
-        createClientRequest.put("login", "exampleUser");
+        userLogin = generateRandomLogin();
+        createClientRequest.put("login", userLogin);
         createClientRequest.put("password", "examplePassword");
         createClientRequest.put("accessLevel", "CLIENT");
         createClientRequest.put("personalId", "12345678910");
@@ -50,8 +54,8 @@ public class RentTest {
         JSONObject createRentRequest = new JSONObject();
         createRentRequest.put("clientId", exampleClientUUID);
         createRentRequest.put("roomId", exampleRoomUUID);
-        createRentRequest.put("startDate", "2020-12-10T13:45:00.000");
-        createRentRequest.put("endDate", "2020-12-15T13:45:00.000");
+        createRentRequest.put("startDate", "2024-12-10T13:45:00.000");
+        createRentRequest.put("endDate", "2024-12-15T13:45:00.000");
 
         exampleRentUUID = RestAssured.given().
                 header("Content-Type","application/json" ).
@@ -71,7 +75,7 @@ public class RentTest {
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents/client/" + exampleClientUUID);
 
-        assertThat(response.asString()).isEqualTo("[{\"beginTime\":\"2020-12-10T13:45:00\",\"client\":{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\"exampleUser\",\"password\":\"examplePassword\",\"uuid\":\""+exampleClientUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"},\"endTime\":\"2020-12-15T13:45:00\",\"id\":\""+exampleRentUUID+"\",\"room\":{\"price\":120.0,\"roomCapacity\":2,\"roomNumber\":1,\"uuid\":\""+exampleRoomUUID+"\"}}]");
+        assertThat(response.asString()).isEqualTo("[{\"beginTime\":\"2024-12-10T13:45:00\",\"client\":{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\""+userLogin+"\",\"password\":\"examplePassword\",\"uuid\":\""+exampleClientUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"},\"endTime\":\"2024-12-15T13:45:00\",\"id\":\""+exampleRentUUID+"\",\"room\":{\"price\":120.0,\"roomCapacity\":2,\"roomNumber\":1,\"uuid\":\""+exampleRoomUUID+"\"}}]");
     }
 
     @Test
@@ -83,7 +87,7 @@ public class RentTest {
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents/room/" + exampleRoomUUID);
 
-        assertThat(response.asString()).isEqualTo("[{\"beginTime\":\"2020-12-10T13:45:00\",\"client\":{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\"exampleUser\",\"password\":\"examplePassword\",\"uuid\":\""+exampleClientUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"},\"endTime\":\"2020-12-15T13:45:00\",\"id\":\""+exampleRentUUID+"\",\"room\":{\"price\":120.0,\"roomCapacity\":2,\"roomNumber\":1,\"uuid\":\""+exampleRoomUUID+"\"}}]");
+        assertThat(response.asString()).isEqualTo("[{\"beginTime\":\"2024-12-10T13:45:00\",\"client\":{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\""+userLogin+"\",\"password\":\"examplePassword\",\"uuid\":\""+exampleClientUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"},\"endTime\":\"2024-12-15T13:45:00\",\"id\":\""+exampleRentUUID+"\",\"room\":{\"price\":120.0,\"roomCapacity\":2,\"roomNumber\":1,\"uuid\":\""+exampleRoomUUID+"\"}}]");
     }
 
     @Test
@@ -95,7 +99,7 @@ public class RentTest {
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents");
 
-        assertThat(response.asString()).contains("{\"beginTime\":\"2020-12-10T13:45:00\",\"client\":{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\"exampleUser\",\"password\":\"examplePassword\",\"uuid\":\""+exampleClientUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"},\"endTime\":\"2020-12-15T13:45:00\",\"id\":\""+exampleRentUUID+"\",\"room\":{\"price\":120.0,\"roomCapacity\":2,\"roomNumber\":1,\"uuid\":\""+exampleRoomUUID+"\"}}");
+        assertThat(response.asString()).contains("{\"beginTime\":\"2024-12-10T13:45:00\",\"client\":{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\""+userLogin+"\",\"password\":\"examplePassword\",\"uuid\":\""+exampleClientUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"},\"endTime\":\"2024-12-15T13:45:00\",\"id\":\""+exampleRentUUID+"\",\"room\":{\"price\":120.0,\"roomCapacity\":2,\"roomNumber\":1,\"uuid\":\""+exampleRoomUUID+"\"}}");
     }
 
     @Test
@@ -106,7 +110,7 @@ public class RentTest {
         Response response = RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents/" + exampleRentUUID);
 
-        assertThat(response.asString()).isEqualTo("{\"beginTime\":\"2020-12-10T13:45:00\",\"client\":{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\"exampleUser\",\"password\":\"examplePassword\",\"uuid\":\""+exampleClientUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"},\"endTime\":\"2020-12-15T13:45:00\",\"id\":\""+exampleRentUUID+"\",\"room\":{\"price\":120.0,\"roomCapacity\":2,\"roomNumber\":1,\"uuid\":\""+exampleRoomUUID+"\"}}");
+        assertThat(response.asString()).isEqualTo("{\"beginTime\":\"2024-12-10T13:45:00\",\"client\":{\"accessLevel\":\"CLIENT\",\"active\":false,\"login\":\""+userLogin+"\",\"password\":\"examplePassword\",\"uuid\":\""+exampleClientUUID+"\",\"address\":\"Pawia 23/25 m 13 Warszawa 00-000\",\"firstName\":\"Jan\",\"lastName\":\"Kowalski\",\"moneySpent\":0.0,\"personalId\":\"12345678910\"},\"endTime\":\"2024-12-15T13:45:00\",\"id\":\""+exampleRentUUID+"\",\"room\":{\"price\":120.0,\"roomCapacity\":2,\"roomNumber\":1,\"uuid\":\""+exampleRoomUUID+"\"}}");
     }
 
     @Test
@@ -127,7 +131,7 @@ public class RentTest {
 
     @Test
     public void testGetRentsByStartDate() {
-        String startDate = "2020-12-10T13:45:00";
+        String startDate = "2024-12-10T13:45:00";
         RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents/startDate/" + startDate)
                 .then().statusCode(200);
@@ -135,11 +139,14 @@ public class RentTest {
 
     @Test
     public void testGetRentsByEndDate() {
-        String endDate = "2020-12-15T13:45:00";
+        String endDate = "2024-12-15T13:45:00";
         RestAssured.given().contentType(ContentType.JSON).
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents/endDate/" + endDate)
                 .then().statusCode(200);
     }
 
+    private String generateRandomLogin() {
+        return "exampleUser".concat(UUID.randomUUID().toString());
+    }
 
 }
