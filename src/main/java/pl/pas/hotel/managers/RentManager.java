@@ -58,6 +58,34 @@ public class RentManager {
         return rentRepository.getRents();
     }
 
+    public List<Rent> getPastRents() {
+        return getRents().stream().filter(rent -> (rent.getBeginTime().isBefore(LocalDateTime.now()) && rent.getEndTime().isBefore(LocalDateTime.now()))).toList();
+    }
+
+    public List<Rent> getCurrentRents() {
+        return getRents().stream().filter(rent -> (rent.getBeginTime().isBefore(LocalDateTime.now()) && rent.getEndTime().isAfter(LocalDateTime.now()))).toList();
+    }
+
+    public List<Rent> getPastRentsByClientId(UUID clientId) {
+        userManager.getUserById(clientId);
+        return getPastRents().stream().filter(rent -> rent.getClient().getUuid().equals(clientId)).toList();
+    }
+
+    public List<Rent> getCurrentRentsByClientId(UUID clientId) {
+        userManager.getUserById(clientId);
+        return getCurrentRents().stream().filter(rent -> rent.getClient().getUuid().equals(clientId)).toList();
+    }
+
+    public List<Rent> getPastRentsByRoomId(UUID roomId) {
+        roomManager.getRoomById(roomId);
+        return getPastRents().stream().filter(rent -> rent.getRoom().getUuid().equals(roomId)).toList();
+    }
+
+    public List<Rent> getCurrentRentsByRoomId(UUID roomId) {
+        roomManager.getRoomById(roomId);
+        return getCurrentRents().stream().filter(rent -> rent.getRoom().getUuid().equals(roomId)).toList();
+    }
+
     public List<Rent> getRentsByClientId(UUID clientId) throws UserWithGivenIdNotFound {
         userManager.getUserById(clientId);
         return rentRepository.getRentsByClient(clientId);

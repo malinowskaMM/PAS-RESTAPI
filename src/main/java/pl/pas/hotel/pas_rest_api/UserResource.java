@@ -91,6 +91,12 @@ public class UserResource {
         return Response.ok().entity(userManager.getAllUsers()).build();
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUsersByPartOfLogin(String partOfLogin) {
+        return Response.ok().entity(userManager.findClientsByLoginPart(partOfLogin)).build();
+    }
+
     @DELETE
     @Path("/{uuid}")
     public Response deleteUser(@PathParam("uuid")UUID userId) throws UserWithGivenIdNotFound {

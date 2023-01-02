@@ -76,6 +76,10 @@ public class UserManager {
         return user;
     }
 
+    public List<User> findClientsByLoginPart(String login) {
+        return findClients(user -> user.getLogin().contains(login));
+    }
+
     public List<User> findClients(Predicate<User> predicate) {
         return userRepository.getUsersBy(predicate);
     }

@@ -47,18 +47,62 @@ public class RentResource {
 
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/startDate/{startDate}")
-    public Response getRentsByStartDate(@PathParam("startDate") String startDate) {
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/startDate")
+    public Response getRentsByStartDate(String startDate) {
         LocalDateTime date = LocalDateTime.parse(startDate);
         return Response.ok().entity(rentManager.getRentsByStartDate(date)).build();
     }
 
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/endDate/{endDate}")
-    public Response getRentsByEndDate(@PathParam("endDate") String endDate) {
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/endDate")
+    public Response getRentsByEndDate(String endDate) {
         LocalDateTime date = LocalDateTime.parse(endDate);
         return Response.ok().entity(rentManager.getRentsByEndDate(date)).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/archived")
+    public Response getPastRents() {
+        return Response.ok().entity(rentManager.getPastRents()).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/current/client/{uuid}")
+    public Response getCurrentRentsByClientId(@PathParam("uuid") UUID clientId) {
+        return Response.ok().entity(rentManager.getPastRentsByClientId(clientId)).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/archived/client/{uuid}")
+    public Response getPastRentsByClientId(@PathParam("uuid") UUID clientId) {
+        return Response.ok().entity(rentManager.getPastRentsByClientId(clientId)).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/current/room/{uuid}")
+    public Response getCurrentRentsByRoomId(@PathParam("uuid") UUID roomId) {
+        return Response.ok().entity(rentManager.getPastRentsByRoomId(roomId)).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/archived/room/{uuid}")
+    public Response getPastRentsByRoomId(@PathParam("uuid") UUID roomId) {
+        return Response.ok().entity(rentManager.getPastRentsByRoomId(roomId)).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/current")
+    public Response getCurrentRents() {
+        return Response.ok().entity(rentManager.getCurrentRents()).build();
     }
 
     @POST
