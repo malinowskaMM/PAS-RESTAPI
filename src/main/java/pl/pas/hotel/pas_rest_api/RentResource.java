@@ -46,19 +46,19 @@ public class RentResource {
     }
 
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/startDate")
-    public Response getRentsByStartDate(String startDate) {
+    public Response getRentsByStartDate(@QueryParam("startDate") String startDate) {
         LocalDateTime date = LocalDateTime.parse(startDate);
         return Response.ok().entity(rentManager.getRentsByStartDate(date)).build();
     }
 
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/endDate")
-    public Response getRentsByEndDate(String endDate) {
+    public Response getRentsByEndDate(@QueryParam("endDate") String endDate) {
         LocalDateTime date = LocalDateTime.parse(endDate);
         return Response.ok().entity(rentManager.getRentsByEndDate(date)).build();
     }
@@ -74,7 +74,7 @@ public class RentResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/current/client/{uuid}")
     public Response getCurrentRentsByClientId(@PathParam("uuid") UUID clientId) {
-        return Response.ok().entity(rentManager.getPastRentsByClientId(clientId)).build();
+        return Response.ok().entity(rentManager.getCurrentRentsByClientId(clientId)).build();
     }
 
     @GET
@@ -88,7 +88,7 @@ public class RentResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/current/room/{uuid}")
     public Response getCurrentRentsByRoomId(@PathParam("uuid") UUID roomId) {
-        return Response.ok().entity(rentManager.getPastRentsByRoomId(roomId)).build();
+        return Response.ok().entity(rentManager.getCurrentRentsByRoomId(roomId)).build();
     }
 
     @GET

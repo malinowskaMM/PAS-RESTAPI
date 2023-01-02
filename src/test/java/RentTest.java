@@ -138,17 +138,17 @@ public class RentTest {
 
     @Test
     public void testGetRentsByStartDate() {
-        String startDate = "2024-12-10T13:45:00";
-        RestAssured.given().contentType(ContentType.JSON).
-                when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents/startDate/" + startDate)
+        RestAssured.given().contentType(ContentType.TEXT).
+                queryParam("startDate","2024-12-10T13:45:00").
+                when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents/startDate")
                 .then().statusCode(200);
     }
 
     @Test
     public void testGetRentsByEndDate() {
-        String endDate = "2024-12-15T13:45:00";
-        RestAssured.given().contentType(ContentType.JSON).
-                when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents/endDate/" + endDate)
+        RestAssured.given().contentType(ContentType.TEXT).
+                queryParam("endDate","2024-12-15T13:45:00").
+                when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents/endDate")
                 .then().statusCode(200);
     }
 
