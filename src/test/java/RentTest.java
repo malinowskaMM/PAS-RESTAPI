@@ -58,13 +58,6 @@ public class RentTest {
         createRentRequest.put("startDate", "2024-12-10T13:45:00.000");
         createRentRequest.put("endDate", "2024-12-15T13:45:00.000");
 
-        exampleRentUUID = RestAssured.given().
-                header("Content-Type","application/json" ).
-                header("Accept","application/json" ).
-                body(createRentRequest.toJSONString()).when().
-                post("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents").
-                then().statusCode(200)
-                .extract().path("id");
     }
 
     @AfterEach
@@ -151,6 +144,29 @@ public class RentTest {
                 when().get("http://localhost:8080/PAS_Rest_API-1.0-SNAPSHOT/api/rents/endDate")
                 .then().statusCode(200);
     }
+
+    //ToDo
+    @Test
+    public void getCurrentRentsByClientId() {
+
+
+    }
+
+    //ToDo
+    @Test
+    public void getPastRentsByClientId() {
+    }
+
+    //ToDo
+    @Test
+    public void getCurrentRentsByRoomId() {
+    }
+
+    //ToDo
+    @Test
+    public void getPastRentsByRoomId() {
+    }
+
 
     private String generateRandomLogin() {
         return "exampleUser".concat(UUID.randomUUID().toString());
