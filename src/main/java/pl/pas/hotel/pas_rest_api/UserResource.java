@@ -118,6 +118,15 @@ public class UserResource {
         return Response.ok().entity(userManager.getUserById(userId)).build();
     }
 
+    @GET
+    @Path("/client/{uuid}")
+    public Response getClient(@PathParam("uuid") UUID userId) throws UserWithGivenIdNotFound {
+        if(userManager.getClientById(userId) == null ) {
+            return Response.status(404).build();
+        }
+        return Response.ok().entity(userManager.getClientById(userId)).build();
+    }
+
     @PUT
     @Path("/client/activate/{uuid}")
     public Response activateUser(@PathParam("uuid") UUID userId) throws UserWithGivenIdNotFound {
