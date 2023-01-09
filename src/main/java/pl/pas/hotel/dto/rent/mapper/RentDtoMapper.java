@@ -27,9 +27,8 @@ public class RentDtoMapper {
 
 
     public Rent toRent(RentDto rentDto) throws RoomWithGivenIdNotFound, ClientWithGivenIdNotFound {
-        Client client = userManager.getClientById(rentDto.getClientId());
+        Client client = userManager.getClientById(UUID.fromString(rentDto.getClientId()));
         Room room = roomManager.getRoomById(UUID.fromString(rentDto.getRoomId()));
-
         return new Rent(rentDto.getBeginTime(), rentDto.getEndTime(), client, room);
     }
 
