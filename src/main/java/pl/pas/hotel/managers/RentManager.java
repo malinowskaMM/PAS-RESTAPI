@@ -28,12 +28,12 @@ public class RentManager {
     @Inject
     private RoomManager roomManager;
 
-    public Rent rentRoom(Client client, Room room, LocalDateTime beginTime, LocalDateTime endTime) throws RoomNotAvailable, RentValidationFailed, DateTimeValidationFailed {
-        if (validator.validate(client).isEmpty() && validator.validate(room).isEmpty()) {
+    public Rent rentRoom(String clientId, String roomId, LocalDateTime beginTime, LocalDateTime endTime) throws RoomNotAvailable, RentValidationFailed, DateTimeValidationFailed {
+        if (validator.validate(clientId).isEmpty() && validator.validate(roomId).isEmpty()) {
             if (beginTime.isBefore(endTime)) {
-                    final List<Rent> rents = rentRepository.getCurrentRentsByRoom(room.getUuid(), beginTime, endTime);
-                    if (rents.isEmpty() && client.isActive()) {
-                        return rentRepository.createRent(beginTime, endTime, client, room);
+                    final List<Rent> rents = rentRepository.getCurrentRentsByRoom(UUID.fromString(roomId), beginTime, endTime);
+                    if (rents.isEmpty() && userManager.getUserById(UUID.fromString(clientId)).isActive()) {
+                        return rentRepository.createRent(beginTime, endTime, clientId, roomId);
                     } else {
                         throw new RoomNotAvailable("Room is not available");
                     }
@@ -68,22 +68,22 @@ public class RentManager {
 
     public List<Rent> getPastRentsByClientId(UUID clientId) {
         userManager.getUserById(clientId);
-        return getPastRents().stream().filter(rent -> rent.getClient().getUuid().equals(clientId)).toList();
+        return getPastRents().stream().filter(rent -> rent.getClientId().equals(clientId.toString())).toList();
     }
 
     public List<Rent> getCurrentRentsByClientId(UUID clientId) {
         userManager.getUserById(clientId);
-        return getCurrentRents().stream().filter(rent -> rent.getClient().getUuid().equals(clientId)).toList();
+        return getCurrentRents().stream().filter(rent -> rent.getClientId().equals(clientId.toString())).toList();
     }
 
     public List<Rent> getPastRentsByRoomId(UUID roomId) {
         roomManager.getRoomById(roomId);
-        return getPastRents().stream().filter(rent -> rent.getRoom().getUuid().equals(roomId)).toList();
+        return getPastRents().stream().filter(rent -> rent.getRoomId().equals(roomId.toString())).toList();
     }
 
     public List<Rent> getCurrentRentsByRoomId(UUID roomId) {
         roomManager.getRoomById(roomId);
-        return getCurrentRents().stream().filter(rent -> rent.getRoom().getUuid().equals(roomId)).toList();
+        return getCurrentRents().stream().filter(rent -> rent.getRoomId().equals(roomId.toString())).toList();
     }
 
     public List<Rent> getRentsByClientId(UUID clientId) throws UserWithGivenIdNotFound {

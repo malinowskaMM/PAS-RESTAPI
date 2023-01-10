@@ -20,9 +20,9 @@ public class RentRepository implements pl.pas.hotel.repositories.RentRepository 
     private final List<Rent> rents = synchronizedList(new ArrayList<>());
 
     @Override
-    public Rent createRent(LocalDateTime beginTime, LocalDateTime endTime, Client client, Room room) throws RoomNotAvailable {
-        if(getCurrentRentsByRoom(room.getUuid(), beginTime, endTime).isEmpty()) {
-            Rent rent = new Rent(beginTime, endTime, client, room);
+    public Rent createRent(LocalDateTime beginTime, LocalDateTime endTime, String clientId, String roomId) throws RoomNotAvailable {
+        if(getCurrentRentsByRoom(UUID.fromString(roomId), beginTime, endTime).isEmpty()) {
+            Rent rent = new Rent(beginTime, endTime, clientId, roomId);
             rents.add(rent);
             return rent;
         }
@@ -47,12 +47,12 @@ public class RentRepository implements pl.pas.hotel.repositories.RentRepository 
 
     @Override
     public List<Rent> getRentsByClient(UUID clientId) {
-        return getRents().stream().filter(rent -> rent.getClient().getUuid().equals(clientId)).toList();
+        return getRents().stream().filter(rent -> rent.getClientId().equals(clientId.toString())).toList();
     }
 
     @Override
     public List<Rent> getRentsByRoom(UUID roomId) {
-        return getRents().stream().filter(rent -> rent.getRoom().getUuid().equals(roomId)).toList();
+        return getRents().stream().filter(rent -> rent.getRoomId().equals(roomId.toString())).toList();
     }
 
 

@@ -109,7 +109,7 @@ public class RentResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response rentRoom(@Valid RentDto rentDto) throws RoomWithGivenIdNotFound, ClientWithGivenIdNotFound, RoomNotAvailable, RentValidationFailed, DateTimeValidationFailed {
         Rent rent = rentDtoMapper.toRent(rentDto);
-        Rent rentResult = rentManager.rentRoom(rent.getClient(), rent.getRoom(), rent.getBeginTime(), rent.getEndTime());
+        Rent rentResult = rentManager.rentRoom(rent.getClientId(), rent.getRoomId(), rent.getBeginTime(), rent.getEndTime());
         return Response.ok().entity(rentResult).build();
     }
 

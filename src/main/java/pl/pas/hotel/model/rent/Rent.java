@@ -13,15 +13,15 @@ public class Rent implements Serializable {
     UUID id;
     LocalDateTime beginTime;
     LocalDateTime endTime;
-    Client client;
-    Room room;
+    String clientId;
+    String roomId;
 
-    public Rent(LocalDateTime beginTime, LocalDateTime endTime, Client client, Room room) {
+    public Rent(LocalDateTime beginTime, LocalDateTime endTime, String clientId, String roomId) {
         this.id = UUID.randomUUID();
         this.beginTime = beginTime;
         this.endTime = endTime;
-        this.client = client;
-        this.room = room;
+        this.clientId = clientId;
+        this.roomId = roomId;
     }
 
     public void endRent() {
