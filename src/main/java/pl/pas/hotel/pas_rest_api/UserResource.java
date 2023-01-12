@@ -3,9 +3,11 @@ package pl.pas.hotel.pas_rest_api;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import pl.pas.hotel.dto.auth.PasswordChangeDto;
 import pl.pas.hotel.dto.user.AdminDto;
 import pl.pas.hotel.dto.user.ClientDto;
 import pl.pas.hotel.dto.user.ManagerDto;
@@ -27,6 +29,19 @@ public class UserResource {
 
     @Inject
     UserDtoMapper userDtoMapper;
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/passwordChange")
+    public Response changeUserPassword(@NotNull PasswordChangeDto passwordChangeDto) {
+        if(passwordChangeDto.getNewPassword().equals(passwordChangeDto.getConfirmNewPassword())) {
+            userManager.changePassword(passwordChangeDto.getOldPassword(), passwordChangeDto.getNewPassword());
+            return Response.ok().build();
+        } else {
+            throw new PasswordMatchFailed("New password and new confrim password do not match");
+        }
+
+    }
 
     @POST
     @Path("/client")

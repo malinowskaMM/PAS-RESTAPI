@@ -4,6 +4,8 @@ import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.SecurityContext;
 import pl.pas.hotel.exceptions.*;
 import pl.pas.hotel.model.user.AccessLevel;
 import pl.pas.hotel.model.user.User;
@@ -22,6 +24,10 @@ public class UserManager {
 
     @Inject
     private UserRepository userRepository;
+
+    @Context
+    private SecurityContext securityContext;
+
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     public synchronized Client registerClient(String firstName, String lastName, String personalId, String address, String login, String password) throws ClientValidationFailed {
@@ -102,6 +108,18 @@ public class UserManager {
 
     public void deleteUser(UUID id) throws UserWithGivenIdNotFound {
         userRepository.deleteUser(getUserById(id).getUuid());
+    }
+
+    public boolean changePassword(String oldPassword, String newPassword) {
+        User user = getAllUsers().stream().filter(user1 -> user1.getLogin().equals(securityContext.getUserPrincipal().getName())).findFirst().orElse(null);
+        if(user != null && !oldPassword.equals(newPassword)) {
+            user.setPassword(newPassword);
+            return true;
+        }
+        if(oldPassword.equals(newPassword)) {
+            throw new PasswordMatch("New password and old password matches");
+        }
+        return false;
     }
 
 }
