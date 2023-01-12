@@ -80,6 +80,10 @@ public class UserManager {
         return findClients(user -> user.getLogin().contains(login));
     }
 
+    public User findUserByLogin(String login, String password) {
+        return userRepository.findUserByLogin(login, password);
+    }
+
     public List<User> findClients(Predicate<User> predicate) {
         return userRepository.getUsersBy(predicate);
     }

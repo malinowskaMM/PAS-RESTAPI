@@ -89,6 +89,10 @@ public class UserRepository implements pl.pas.hotel.repositories.UserRepository 
         return null;
     }
 
+    public User findUserByLogin(String login, String password) {
+        return getUsers().stream().filter(user -> (user.getLogin().equals(login) && user.getPassword().equals(password))).toList().get(0);
+    }
+
     @Override
     public User getUserById(UUID id) {
         Optional<User> userOptional = users.stream().filter(user -> user.getUuid().equals(id)).findFirst();
