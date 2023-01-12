@@ -9,7 +9,7 @@ import java.util.Date;
 
 public class JwtGenerator {
 
-    private static final String SECRET = null;
+    private static final String SECRET = "09SEVheeEsOTYLDZAJylVmlHb4XadBtgABGKZB5wmKVexgWU";
     private static final long timeout = 9000000L;
 
 

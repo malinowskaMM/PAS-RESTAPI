@@ -1,5 +1,6 @@
 package pl.pas.hotel.pas_rest_api;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -31,6 +32,7 @@ public class RoomResource {
         return Response.ok().entity(roomManager.getAllRooms()).build();
     }
 
+    @RolesAllowed("Admin")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createRoom(@Valid RoomDto roomDto) throws RoomValidationFailed {
@@ -41,6 +43,7 @@ public class RoomResource {
 
     @DELETE
     @Path("/{uuid}")
+    @RolesAllowed({"Admin"})
     public Response deleteRoom(@PathParam("uuid") UUID roomId) throws RoomWithGivenIdNotFound {
         if(roomManager.getRoomById(roomId) == null) {
             return Response.status(404).build();
@@ -51,6 +54,7 @@ public class RoomResource {
 
     @GET
     @Path("/{uuid}")
+    @RolesAllowed({"Admin", "Manager", "Client"})
     public Response getRoom(@PathParam("uuid") UUID roomId) throws RoomWithGivenIdNotFound {
         if(roomManager.getRoomById(roomId) == null) {
             return Response.status(404).build();
@@ -60,6 +64,7 @@ public class RoomResource {
 
     @PUT
     @Path("/{uuid}")
+    @RolesAllowed({"Admin", "Manager"})
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateRoom(@PathParam("uuid") UUID roomId, RoomDto roomDto) throws RoomWithGivenIdNotFound {
         if(roomManager.getRoomById(roomId) == null) {
