@@ -1,16 +1,20 @@
 package pl.pas.hotel.managers;
 
+import com.nimbusds.jose.JOSEException;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.ws.rs.NotFoundException;
+import org.json.simple.JSONObject;
+import pl.pas.hotel.auth.JwsGenerator;
 import pl.pas.hotel.exceptions.RoomValidationFailed;
 import pl.pas.hotel.exceptions.RoomWithGivenIdNotFound;
 import pl.pas.hotel.model.room.Room;
 import pl.pas.hotel.repositoriesImplementation.RentRepository;
 import pl.pas.hotel.repositoriesImplementation.RoomRepository;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -22,6 +26,8 @@ public class RoomManager {
 
     @Inject
     private RentRepository rentRepository;
+
+    private JwsGenerator jwsGenerator = new JwsGenerator();
 
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
@@ -44,12 +50,19 @@ public class RoomManager {
 
     }
 
-    public synchronized void updateRoom(UUID id, Integer roomNumber, Double basePrice, int roomCapacity) throws RoomWithGivenIdNotFound {
+    public synchronized void updateRoom(UUID id, String jws, Integer roomNumber, Double basePrice, int roomCapacity) throws RoomWithGivenIdNotFound, ParseException, JOSEException {
         final Room room1 = roomRepository.getRoomById(id);
         if (room1 == null) {
             throw new RoomWithGivenIdNotFound("Cannot update room");
         } else {
-            roomRepository.modifyRoom(id, roomNumber, basePrice, roomCapacity);
+            if (this.jwsGenerator.verify(jws)) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("uuid", room1.getUuid());
+                String newJwt = this.jwsGenerator.generateJws(jsonObject.toString());
+                if(newJwt.equals(jws)) {
+                    roomRepository.modifyRoom(room1.getUuid(), roomNumber, basePrice, roomCapacity);
+                }
+            }
         }
     }
 

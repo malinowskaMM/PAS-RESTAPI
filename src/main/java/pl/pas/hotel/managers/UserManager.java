@@ -1,11 +1,14 @@
 package pl.pas.hotel.managers;
 
+import com.nimbusds.jose.JOSEException;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.SecurityContext;
+import org.json.simple.JSONObject;
+import pl.pas.hotel.auth.JwsGenerator;
 import pl.pas.hotel.exceptions.*;
 import pl.pas.hotel.model.user.AccessLevel;
 import pl.pas.hotel.model.user.User;
@@ -15,6 +18,7 @@ import pl.pas.hotel.model.user.manager.Manager;
 import pl.pas.hotel.repositoriesImplementation.UserRepository;
 
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -27,6 +31,8 @@ public class UserManager {
 
     @Context
     private SecurityContext securityContext;
+
+    private JwsGenerator jwsGenerator = new JwsGenerator();
 
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
@@ -57,12 +63,19 @@ public class UserManager {
         }
     }
 
-    public synchronized void updateUser(UUID id, String firstName, String lastName, String address, String login, String password, AccessLevel accessLevel) throws UserWithGivenIdNotFound {
+    public synchronized void updateUser(UUID id, String jws, String firstName, String lastName, String address, String login, String password, AccessLevel accessLevel) throws UserWithGivenIdNotFound, ParseException, JOSEException {
         final User user = userRepository.getUserById(id);
         if (user == null) {
             throw new UserWithGivenIdNotFound("Not found user with given id");
         } else {
-            userRepository.modifyUser(id, login, password, accessLevel ,firstName, lastName, address);
+            if (this.jwsGenerator.verify(jws)) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("uuid", user.getUuid());
+                String newJwt = this.jwsGenerator.generateJws(jsonObject.toString());
+                if(newJwt.equals(jws)) {
+                    userRepository.modifyUser(id, login, password, accessLevel ,firstName, lastName, address);
+                }
+            }
         }
     }
 
@@ -94,12 +107,26 @@ public class UserManager {
         return userRepository.getUsersBy(predicate);
     }
 
-    public void activateUser(UUID id) throws UserWithGivenIdNotFound {
-        userRepository.activateUser(getUserById(id).getUuid());
+    public void activateUser(UUID id, String jws) throws UserWithGivenIdNotFound, JOSEException, ParseException {
+        if (this.jwsGenerator.verify(jws)) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("uuid", id);
+            String newJwt = this.jwsGenerator.generateJws(jsonObject.toString());
+            if(newJwt.equals(jws)) {
+                userRepository.activateUser(getUserById(id).getUuid());
+            }
+        }
     }
 
-    public void deactivateUser(UUID id) throws UserWithGivenIdNotFound {
-        userRepository.deactivateUser(getUserById(id).getUuid());
+    public void deactivateUser(UUID id, String jws) throws UserWithGivenIdNotFound, JOSEException, ParseException {
+        if (this.jwsGenerator.verify(jws)) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("uuid", id);
+            String newJwt = this.jwsGenerator.generateJws(jsonObject.toString());
+            if(newJwt.equals(jws)) {
+                userRepository.deactivateUser(getUserById(id).getUuid());
+            }
+        }
     }
 
     public List<User> getAllUsers(){

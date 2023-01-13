@@ -1,11 +1,14 @@
 package pl.pas.hotel.pas_rest_api;
 
+import com.nimbusds.jose.JOSEException;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pl.pas.hotel.dto.auth.PasswordChangeDto;
@@ -19,6 +22,7 @@ import pl.pas.hotel.model.user.admin.Admin;
 import pl.pas.hotel.model.user.client.Client;
 import pl.pas.hotel.model.user.manager.Manager;
 
+import java.text.ParseException;
 import java.util.UUID;
 
 @RequestScoped
@@ -36,7 +40,7 @@ public class UserResource {
     @Path("/passwordChange")
     @RolesAllowed("Admin")
     public Response changeUserPassword(@NotNull PasswordChangeDto passwordChangeDto) {
-        if(passwordChangeDto.getNewPassword().equals(passwordChangeDto.getConfirmNewPassword())) {
+        if (passwordChangeDto.getNewPassword().equals(passwordChangeDto.getConfirmNewPassword())) {
             userManager.changePassword(passwordChangeDto.getOldPassword(), passwordChangeDto.getNewPassword());
             return Response.ok().build();
         } else {
@@ -75,36 +79,48 @@ public class UserResource {
     @PUT
     @Path("/client/{uuid}")
     @RolesAllowed({"Admin", "Manager", "Client"})
-    public Response updateClient(@PathParam("uuid") UUID id, @Valid ClientDto clientDto) throws UserWithGivenIdNotFound {
-        if(userManager.getUserById(id) == null ) {
+    public Response updateClient(@PathParam("uuid") UUID id, @Valid ClientDto clientDto, @Context HttpServletRequest request) throws UserWithGivenIdNotFound, ParseException, JOSEException {
+        String jws = request.getHeader("If-Match");
+        if (jws == null) {
+            return Response.status(400).build();
+        }
+        if (userManager.getUserById(id) == null) {
             return Response.status(404).build();
         }
         Client client = (Client) userDtoMapper.toUser(clientDto);
-        userManager.updateUser(id, client.getFirstName(), client.getLastName(), client.getAddress(), client.getLogin(), client.getPassword(), client.getAccessLevel());
+        userManager.updateUser(id, jws, client.getFirstName(), client.getLastName(), client.getAddress(), client.getLogin(), client.getPassword(), client.getAccessLevel());
         return Response.ok().build();
     }
 
     @PUT
     @Path("/admin/{uuid}")
     @RolesAllowed({"Admin"})
-    public Response updateAdmin(@PathParam("uuid") UUID id, @Valid AdminDto adminDto) throws UserWithGivenIdNotFound {
-        if(userManager.getUserById(id) == null ) {
+    public Response updateAdmin(@PathParam("uuid") UUID id, @Valid AdminDto adminDto, @Context HttpServletRequest request) throws UserWithGivenIdNotFound, ParseException, JOSEException {
+        String jws = request.getHeader("If-Match");
+        if (jws == null) {
+            return Response.status(400).build();
+        }
+        if (userManager.getUserById(id) == null) {
             return Response.status(404).build();
         }
         Admin admin = (Admin) userDtoMapper.toUser(adminDto);
-        userManager.updateUser(id, null, null, null, admin.getLogin(), admin.getPassword(), admin.getAccessLevel());
+        userManager.updateUser(id, jws, null, null, null, admin.getLogin(), admin.getPassword(), admin.getAccessLevel());
         return Response.ok().build();
     }
 
     @PUT
     @Path("/manager/{uuid}")
     @RolesAllowed({"Admin", "Manager", "Client"})
-    public Response updateUser(@PathParam("uuid") UUID id, @Valid ManagerDto managerDto) throws UserWithGivenIdNotFound {
-        if(userManager.getUserById(id) == null ) {
+    public Response updateUser(@PathParam("uuid") UUID id, @Valid ManagerDto managerDto, @Context HttpServletRequest request) throws UserWithGivenIdNotFound, ParseException, JOSEException {
+        String jws = request.getHeader("If-Match");
+        if (jws == null) {
+            return Response.status(400).build();
+        }
+        if (userManager.getUserById(id) == null) {
             return Response.status(404).build();
         }
         Manager manager = (Manager) userDtoMapper.toUser(managerDto);
-        userManager.updateUser(id, null, null, null, manager.getLogin(), manager.getPassword(), manager.getAccessLevel());
+        userManager.updateUser(id, jws, null, null, null, manager.getLogin(), manager.getPassword(), manager.getAccessLevel());
         return Response.ok().build();
     }
 
@@ -125,10 +141,10 @@ public class UserResource {
     @DELETE
     @Path("/{uuid}")
     @RolesAllowed({"Admin", "Manager"})
-    public Response deleteUser(@PathParam("uuid")UUID userId) throws UserWithGivenIdNotFound {
+    public Response deleteUser(@PathParam("uuid") UUID userId) throws UserWithGivenIdNotFound {
         try {
-        userManager.getUserById(userId);
-        userManager.deleteUser(userId);
+            userManager.getUserById(userId);
+            userManager.deleteUser(userId);
         } catch (UserWithGivenIdNotFound e) {
             return Response.status(404).build();
         }
@@ -139,7 +155,7 @@ public class UserResource {
     @Path("/{uuid}")
     @RolesAllowed({"Admin", "Manager"})
     public Response getUser(@PathParam("uuid") UUID userId) throws UserWithGivenIdNotFound {
-        if(userManager.getUserById(userId) == null ) {
+        if (userManager.getUserById(userId) == null) {
             return Response.status(404).build();
         }
         return Response.ok().entity(userManager.getUserById(userId)).build();
@@ -149,7 +165,7 @@ public class UserResource {
     @Path("/client/{uuid}")
     @RolesAllowed({"Admin", "Manager"})
     public Response getClient(@PathParam("uuid") UUID userId) throws UserWithGivenIdNotFound {
-        if(userManager.getClientById(userId) == null ) {
+        if (userManager.getClientById(userId) == null) {
             return Response.status(404).build();
         }
         return Response.ok().entity(userManager.getClientById(userId)).build();
@@ -158,22 +174,30 @@ public class UserResource {
     @PUT
     @Path("/client/activate/{uuid}")
     @RolesAllowed({"Admin", "Manager"})
-    public Response activateUser(@PathParam("uuid") UUID userId) throws UserWithGivenIdNotFound {
-        if(userManager.getUserById(userId) == null ) {
+    public Response activateUser(@PathParam("uuid") UUID userId, @Context HttpServletRequest request) throws UserWithGivenIdNotFound, ParseException, JOSEException {
+        String jws = request.getHeader("If-Match");
+        if (jws == null) {
+            return Response.status(400).build();
+        }
+        if (userManager.getUserById(userId) == null) {
             return Response.status(404).build();
         }
-        userManager.activateUser(userId);
+        userManager.activateUser(userId, jws);
         return Response.ok().build();
     }
 
     @PUT
     @Path("/client/deactivate/{uuid}")
     @RolesAllowed({"Admin", "Manager"})
-    public Response deactivateUser(@PathParam("uuid") UUID userId) throws UserWithGivenIdNotFound {
-        if(userManager.getUserById(userId) == null ) {
+    public Response deactivateUser(@PathParam("uuid") UUID userId, @Context HttpServletRequest request) throws UserWithGivenIdNotFound, ParseException, JOSEException {
+        String jws = request.getHeader("If-Match");
+        if (jws == null) {
+            return Response.status(400).build();
+        }
+        if (userManager.getUserById(userId) == null) {
             return Response.status(404).build();
         }
-        userManager.deactivateUser(userId);
+        userManager.deactivateUser(userId, jws);
         return Response.ok().build();
     }
 

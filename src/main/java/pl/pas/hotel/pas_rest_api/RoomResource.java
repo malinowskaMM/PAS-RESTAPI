@@ -1,10 +1,13 @@
 package pl.pas.hotel.pas_rest_api;
 
+import com.nimbusds.jose.JOSEException;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pl.pas.hotel.dto.room.RoomDto;
@@ -14,6 +17,7 @@ import pl.pas.hotel.exceptions.RoomWithGivenIdNotFound;
 import pl.pas.hotel.managers.RoomManager;
 import pl.pas.hotel.model.room.Room;
 
+import java.text.ParseException;
 import java.util.UUID;
 
 @RequestScoped
@@ -66,12 +70,16 @@ public class RoomResource {
     @Path("/{uuid}")
     @RolesAllowed({"Admin", "Manager"})
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateRoom(@PathParam("uuid") UUID roomId, RoomDto roomDto) throws RoomWithGivenIdNotFound {
+    public Response updateRoom(@PathParam("uuid") UUID roomId, RoomDto roomDto, @Context HttpServletRequest request) throws RoomWithGivenIdNotFound, ParseException, JOSEException {
+        String jws = request.getHeader("If-Match");
+        if (jws == null) {
+            return Response.status(400).build();
+        }
         if(roomManager.getRoomById(roomId) == null) {
             return Response.status(404).build();
         }
         Room room = roomDtoMapper.toRoom(roomDto);
-        roomManager.updateRoom(roomId, room.getRoomNumber(), room.getPrice(), room.getRoomCapacity());
+        roomManager.updateRoom(roomId, jws, room.getRoomNumber(), room.getPrice(), room.getRoomCapacity());
         return Response.ok().build();
     }
 }
