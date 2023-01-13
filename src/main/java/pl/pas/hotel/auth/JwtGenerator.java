@@ -1,6 +1,8 @@
 package pl.pas.hotel.auth;
 
 import com.nimbusds.jose.JWSAlgorithm;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.security.enterprise.identitystore.CredentialValidationResult;
@@ -20,6 +22,10 @@ public class JwtGenerator {
                 .setExpiration(new Date(System.currentTimeMillis() + timeout))
                 .signWith(SignatureAlgorithm.HS256, SECRET)
                 .compact();
+    }
+
+    public Jws<Claims> parseJWT(String jwt) {
+        return Jwts.parser().setSigningKey(SECRET).parseClaimsJws(jwt);
     }
 
 }
