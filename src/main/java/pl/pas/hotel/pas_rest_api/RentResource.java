@@ -1,10 +1,13 @@
 package pl.pas.hotel.pas_rest_api;
 
+import com.nimbusds.jose.JOSEException;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import pl.pas.hotel.dto.rent.RentDto;
@@ -13,6 +16,7 @@ import pl.pas.hotel.exceptions.*;
 import pl.pas.hotel.managers.RentManager;
 import pl.pas.hotel.model.rent.Rent;
 
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -129,11 +133,15 @@ public class RentResource {
     @PUT
     @Path("/{uuid}")
     @RolesAllowed({"Admin", "Manager", "Client"})
-    public Response endRent(@PathParam("uuid") UUID rentId) throws RentWithGivenIdNotFound {
+    public Response endRent(@PathParam("uuid") UUID rentId, @Context HttpServletRequest request) throws RentWithGivenIdNotFound, ParseException, JOSEException {
+        String jws = request.getHeader("If-Match");
+        if (jws == null) {
+            return Response.status(400).build();
+        }
         if(rentManager.getRent(rentId) == null) {
             return Response.status(404).build();
         }
-        rentManager.endRoomRent(rentId);
+        rentManager.endRoomRent(rentId, jws);
         return Response.ok().build();
     }
 
