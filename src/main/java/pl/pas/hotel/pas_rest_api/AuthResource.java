@@ -1,5 +1,7 @@
 package pl.pas.hotel.pas_rest_api;
 
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.security.enterprise.credential.UsernamePasswordCredential;
@@ -26,6 +28,7 @@ public class AuthResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"NONE"})
     public Response login(@NotNull AuthDto authDto) {
         UsernamePasswordCredential usernamePasswordCredential = new UsernamePasswordCredential(authDto.getLogin(), authDto.getPassword());
             CredentialValidationResult credentialValidationResult = authIdentityStore.validate(usernamePasswordCredential);

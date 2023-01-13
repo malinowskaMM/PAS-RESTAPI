@@ -1,6 +1,7 @@
 package pl.pas.hotel.pas_rest_api;
 
 import com.nimbusds.jose.JOSEException;
+import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -38,7 +39,7 @@ public class UserResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/passwordChange")
-    @RolesAllowed("Admin")
+    @RolesAllowed({"ADMIN", "MANAGER", "USER"})
     public Response changeUserPassword(@NotNull PasswordChangeDto passwordChangeDto) {
         if (passwordChangeDto.getNewPassword().equals(passwordChangeDto.getConfirmNewPassword())) {
             userManager.changePassword(passwordChangeDto.getOldPassword(), passwordChangeDto.getNewPassword());
@@ -51,7 +52,7 @@ public class UserResource {
 
     @POST
     @Path("/client")
-    @RolesAllowed({"Admin", "Manager", "Client"})
+    @RolesAllowed({"ADMIN", "MANAGER", "USER", "NONE"})
     public Response createClient(@Valid ClientDto clientDto) throws ClientValidationFailed {
         Client client = (Client) userDtoMapper.toUser(clientDto);
         client = userManager.registerClient(client.getFirstName(), client.getLastName(), client.getPersonalId(), client.getAddress(), client.getLogin(), client.getPassword());
@@ -60,7 +61,7 @@ public class UserResource {
 
     @POST
     @Path("/admin")
-    @RolesAllowed("Admin")
+    @RolesAllowed({"ADMIN"})
     public Response createAdmin(@Valid AdminDto adminDto) throws AdminValidationFailed {
         Admin admin = (Admin) userDtoMapper.toUser(adminDto);
         admin = userManager.registerAdmin(admin.getLogin(), admin.getPassword());
@@ -69,7 +70,7 @@ public class UserResource {
 
     @POST
     @Path("/manager")
-    @RolesAllowed({"Admin", "Manager"})
+    @RolesAllowed({"ADMIN", "MANAGER"})
     public Response createManager(@Valid ManagerDto managerDto) throws ManagerValidationFailed {
         Manager manager = (Manager) userDtoMapper.toUser(managerDto);
         manager = userManager.registerManager(manager.getLogin(), manager.getPassword());
@@ -78,7 +79,7 @@ public class UserResource {
 
     @PUT
     @Path("/client/{uuid}")
-    @RolesAllowed({"Admin", "Manager", "Client"})
+    @RolesAllowed({"ADMIN", "MANAGER", "USER"})
     public Response updateClient(@PathParam("uuid") UUID id, @Valid ClientDto clientDto, @Context HttpServletRequest request) throws UserWithGivenIdNotFound, ParseException, JOSEException {
         String jws = request.getHeader("If-Match");
         if (jws == null) {
@@ -94,7 +95,7 @@ public class UserResource {
 
     @PUT
     @Path("/admin/{uuid}")
-    @RolesAllowed({"Admin"})
+    @RolesAllowed({"ADMIN"})
     public Response updateAdmin(@PathParam("uuid") UUID id, @Valid AdminDto adminDto, @Context HttpServletRequest request) throws UserWithGivenIdNotFound, ParseException, JOSEException {
         String jws = request.getHeader("If-Match");
         if (jws == null) {
@@ -110,7 +111,7 @@ public class UserResource {
 
     @PUT
     @Path("/manager/{uuid}")
-    @RolesAllowed({"Admin", "Manager", "Client"})
+    @RolesAllowed({"ADMIN", "MANAGER", "USER"})
     public Response updateUser(@PathParam("uuid") UUID id, @Valid ManagerDto managerDto, @Context HttpServletRequest request) throws UserWithGivenIdNotFound, ParseException, JOSEException {
         String jws = request.getHeader("If-Match");
         if (jws == null) {
@@ -126,21 +127,21 @@ public class UserResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"Admin", "Manager"})
+    @RolesAllowed({"ADMIN", "MANAGER"})
     public Response getUsers() {
         return Response.ok().entity(userManager.getAllUsers()).build();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"Admin", "Manager"})
+    @RolesAllowed({"ADMIN", "MANAGER"})
     public Response getUsersByPartOfLogin(String partOfLogin) {
         return Response.ok().entity(userManager.findClientsByLoginPart(partOfLogin)).build();
     }
 
     @DELETE
     @Path("/{uuid}")
-    @RolesAllowed({"Admin", "Manager"})
+    @RolesAllowed({"ADMIN", "MANAGER"})
     public Response deleteUser(@PathParam("uuid") UUID userId) throws UserWithGivenIdNotFound {
         try {
             userManager.getUserById(userId);
@@ -153,7 +154,7 @@ public class UserResource {
 
     @GET
     @Path("/{uuid}")
-    @RolesAllowed({"Admin", "Manager"})
+    @RolesAllowed({"ADMIN", "MANAGER"})
     public Response getUser(@PathParam("uuid") UUID userId) throws UserWithGivenIdNotFound {
         if (userManager.getUserById(userId) == null) {
             return Response.status(404).build();
@@ -163,7 +164,7 @@ public class UserResource {
 
     @GET
     @Path("/client/{uuid}")
-    @RolesAllowed({"Admin", "Manager"})
+    @RolesAllowed({"ADMIN", "MANAGER"})
     public Response getClient(@PathParam("uuid") UUID userId) throws UserWithGivenIdNotFound {
         if (userManager.getClientById(userId) == null) {
             return Response.status(404).build();
@@ -173,7 +174,7 @@ public class UserResource {
 
     @PUT
     @Path("/client/activate/{uuid}")
-    @RolesAllowed({"Admin", "Manager"})
+    @RolesAllowed({"ADMIN", "MANAGER"})
     public Response activateUser(@PathParam("uuid") UUID userId, @Context HttpServletRequest request) throws UserWithGivenIdNotFound, ParseException, JOSEException {
         String jws = request.getHeader("If-Match");
         if (jws == null) {
@@ -188,7 +189,7 @@ public class UserResource {
 
     @PUT
     @Path("/client/deactivate/{uuid}")
-    @RolesAllowed({"Admin", "Manager"})
+    @RolesAllowed({"ADMIN", "MANAGER"})
     public Response deactivateUser(@PathParam("uuid") UUID userId, @Context HttpServletRequest request) throws UserWithGivenIdNotFound, ParseException, JOSEException {
         String jws = request.getHeader("If-Match");
         if (jws == null) {

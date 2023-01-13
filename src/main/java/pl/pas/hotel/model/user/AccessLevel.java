@@ -4,7 +4,9 @@ public enum AccessLevel {
 
     ADMIN,
     CLIENT,
-    MANAGER;
+    MANAGER,
+
+    NONE;
 
     public String getAccessLevel() {
         return this.name();
