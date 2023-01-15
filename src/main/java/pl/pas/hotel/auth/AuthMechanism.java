@@ -32,6 +32,7 @@ public class AuthMechanism implements HttpAuthenticationMechanism {
                 return httpMessageContext.notifyContainerAboutLogin(claims.getSubject(), role);
             }
         }
-        return httpMessageContext.responseUnauthorized();
+        role.add("NONE");
+        return httpMessageContext.notifyContainerAboutLogin("none", role);
     }
 }

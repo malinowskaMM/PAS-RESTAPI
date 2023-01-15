@@ -82,5 +82,12 @@ public class RoomManager {
         return roomRepository.getRooms();
     }
 
+    public String getJws(UUID id) throws JOSEException {
+        Room room = roomRepository.getRoomById(id);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", room.getUuid());
+        return jwsGenerator.generateJws(jsonObject.toString());
+    }
+
 
 }

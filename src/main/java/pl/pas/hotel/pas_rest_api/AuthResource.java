@@ -10,8 +10,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 import pl.pas.hotel.auth.AuthIdentityStore;
 import pl.pas.hotel.auth.JwtGenerator;
 import pl.pas.hotel.dto.auth.AuthDto;
@@ -20,11 +22,13 @@ import pl.pas.hotel.dto.auth.AuthDto;
 @RequestScoped
 public class AuthResource {
 
+    @Context
+    private SecurityContext securityContext;
+
     @Inject
     AuthIdentityStore authIdentityStore;
 
-    @Inject
-    JwtGenerator jwtGenerator;
+    JwtGenerator jwtGenerator = new JwtGenerator();
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -34,7 +38,7 @@ public class AuthResource {
             CredentialValidationResult credentialValidationResult = authIdentityStore.validate(usernamePasswordCredential);
 
             if(credentialValidationResult.getStatus().equals(CredentialValidationResult.Status.VALID)) {
-                String jwt = jwtGenerator.generateJWT(credentialValidationResult);
+                String jwt = jwtGenerator.generateJWT(authDto.getLogin(), credentialValidationResult.getCallerGroups().iterator().next());
                 return Response.ok(jwt).build();
             }
         return Response.status(Response.Status.UNAUTHORIZED).build();

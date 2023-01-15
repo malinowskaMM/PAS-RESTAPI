@@ -26,7 +26,6 @@ import pl.pas.hotel.model.user.manager.Manager;
 import java.text.ParseException;
 import java.util.UUID;
 
-@RequestScoped
 @Path("/users")
 public class UserResource {
 

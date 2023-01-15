@@ -20,7 +20,6 @@ import pl.pas.hotel.model.room.Room;
 import java.text.ParseException;
 import java.util.UUID;
 
-@RequestScoped
 @Path("/rooms")
 public class RoomResource {
 
@@ -31,6 +30,7 @@ public class RoomResource {
     private RoomDtoMapper roomDtoMapper;
 
     @GET
+    @RolesAllowed({"ADMIN", "MANAGER", "USER"})
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRooms() {
         return Response.ok().entity(roomManager.getAllRooms()).build();
@@ -59,11 +59,12 @@ public class RoomResource {
     @GET
     @Path("/{uuid}")
     @RolesAllowed({"ADMIN", "MANAGER", "USER", "NONE"})
-    public Response getRoom(@PathParam("uuid") UUID roomId) throws RoomWithGivenIdNotFound {
+    public Response getRoom(@PathParam("uuid") UUID roomId) throws RoomWithGivenIdNotFound, JOSEException {
         if(roomManager.getRoomById(roomId) == null) {
             return Response.status(404).build();
         }
-        return Response.ok().entity(roomManager.getRoomById(roomId)).build();
+        String payload = roomManager.getJws(roomId);
+        return Response.ok().entity(roomManager.getRoomById(roomId)).header("ETag", payload).build();
     }
 
     @PUT
