@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class RentDto {
 
     @NotNull
-    String clientId;
+    String login;
 
     @NotNull
     String roomId;
@@ -25,8 +25,8 @@ public class RentDto {
     LocalDateTime endTime;
 
     @JsonbCreator
-    public RentDto(@JsonbProperty("clientId")String clientId, @JsonbProperty("roomId")String roomId, @JsonbProperty("startDate") LocalDateTime beginTime, @JsonbProperty("endDate") LocalDateTime endTime) {
-        this.clientId = clientId;
+    public RentDto(@JsonbProperty("login")String login, @JsonbProperty("roomId")String roomId, @JsonbProperty("startDate") LocalDateTime beginTime, @JsonbProperty("endDate") LocalDateTime endTime) {
+        this.login = login;
         this.roomId = roomId;
         this.beginTime = beginTime;
         this.endTime = endTime;
