@@ -9,7 +9,6 @@ import java.text.ParseException;
 
 public class JwsGenerator {
 
-    SecureRandom secureRandom = new SecureRandom();
     private static final String SECRET = "09SEVheeEsOTYLDZAJylVmlHb4XadBtgABGKZB5wmKVexgWU";
 
     public String generateJws(String payload) throws JOSEException {

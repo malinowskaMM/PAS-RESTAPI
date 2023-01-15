@@ -10,8 +10,6 @@ import org.json.simple.JSONObject;
 import pl.pas.hotel.auth.JwsGenerator;
 import pl.pas.hotel.exceptions.*;
 import pl.pas.hotel.model.rent.Rent;
-import pl.pas.hotel.model.room.Room;
-import pl.pas.hotel.model.user.client.Client;
 import pl.pas.hotel.repositoriesImplementation.RentRepository;
 
 import java.text.ParseException;

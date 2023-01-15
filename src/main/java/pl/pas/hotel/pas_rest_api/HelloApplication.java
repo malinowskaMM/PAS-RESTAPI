@@ -1,6 +1,7 @@
 package pl.pas.hotel.pas_rest_api;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.security.DeclareRoles;
 import jakarta.annotation.security.PermitAll;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -15,6 +16,7 @@ import pl.pas.hotel.repositories.UserRepository;
 
 @ApplicationPath("/api")
 @ApplicationScoped
+@DeclareRoles({"ADMIN", "MANAGER", "CLIENT", "NONE"})
 @PermitAll
 public class HelloApplication extends Application {
 
