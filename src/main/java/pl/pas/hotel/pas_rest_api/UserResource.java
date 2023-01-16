@@ -126,7 +126,7 @@ public class UserResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
+    @RolesAllowed({"ADMIN", "MANAGER", "CLIENT", "NONE"})
     public Response getUsers() {
         return Response.ok().entity(userManager.getAllUsers()).build();
     }

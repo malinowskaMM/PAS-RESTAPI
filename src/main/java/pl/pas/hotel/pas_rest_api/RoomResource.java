@@ -58,7 +58,7 @@ public class RoomResource {
 
     @GET
     @Path("/{uuid}")
-    @RolesAllowed({"ADMIN", "MANAGER", "CLIENT", "NONE"})
+    @RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
     public Response getRoom(@PathParam("uuid") UUID roomId) throws RoomWithGivenIdNotFound, JOSEException {
         if(roomManager.getRoomById(roomId) == null) {
             return Response.status(404).build();
