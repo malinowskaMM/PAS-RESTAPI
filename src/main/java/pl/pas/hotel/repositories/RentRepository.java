@@ -13,7 +13,6 @@ public interface RentRepository {
     Rent createRent(LocalDateTime beginTime, LocalDateTime endTime, String clientId, String roomId) throws RoomNotAvailable;
     void removeRent(UUID id);
     void endRent(UUID id);
-    List<Rent> getRentsByClient(UUID clientId);
     List<Rent> getRentsByRoom(UUID roomId);
     List<Rent> getCurrentRentsByRoom(UUID roomId, LocalDateTime beginTime, LocalDateTime endTime);
     List<Rent> getRents();

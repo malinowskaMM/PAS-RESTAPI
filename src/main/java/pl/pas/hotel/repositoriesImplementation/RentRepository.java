@@ -3,8 +3,6 @@ package pl.pas.hotel.repositoriesImplementation;
 import jakarta.enterprise.context.ApplicationScoped;
 import pl.pas.hotel.exceptions.RoomNotAvailable;
 import pl.pas.hotel.model.rent.Rent;
-import pl.pas.hotel.model.room.Room;
-import pl.pas.hotel.model.user.client.Client;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -45,9 +43,8 @@ public class RentRepository implements pl.pas.hotel.repositories.RentRepository 
         }
     }
 
-    @Override
-    public List<Rent> getRentsByClient(UUID clientId) {
-        return getRents().stream().filter(rent -> rent.getClientId().equals(clientId.toString())).toList();
+    public List<Rent> getRentsByClient(String login) {
+        return getRents().stream().filter(rent -> rent.getLogin().equals(login)).toList();
     }
 
     @Override

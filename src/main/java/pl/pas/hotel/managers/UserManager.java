@@ -149,4 +149,8 @@ public class UserManager {
         return false;
     }
 
+    public User getUserFromServerContext() {
+        return this.getAllUsers().stream().filter(user -> user.getLogin().equals(securityContext.getUserPrincipal().getName())).toList().get(0);
+    }
+
 }
