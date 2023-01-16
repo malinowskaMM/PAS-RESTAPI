@@ -6,31 +6,40 @@ import jakarta.security.enterprise.credential.Credential;
 import jakarta.security.enterprise.credential.UsernamePasswordCredential;
 import jakarta.security.enterprise.identitystore.CredentialValidationResult;
 import jakarta.security.enterprise.identitystore.IdentityStore;
-import pl.pas.hotel.managers.UserManager;
 import pl.pas.hotel.model.user.User;
+import pl.pas.hotel.repositoriesImplementation.UserRepository;
 
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.*;
 
 @ApplicationScoped
 public class AuthIdentityStore implements IdentityStore {
 
     @Inject
-    UserManager userManager;
+    private UserRepository userRepository;
 
     @Override
-    public CredentialValidationResult validate(Credential credential) {
-        if (credential instanceof UsernamePasswordCredential) {
-            UsernamePasswordCredential usernamePasswordCredential =
-                    (UsernamePasswordCredential) credential;
-            User user = userManager.findUserByLogin(usernamePasswordCredential.getCaller(),
-                    usernamePasswordCredential.getPasswordAsString());
-            if (user != null) {
-                return new CredentialValidationResult(user.getLogin(), new HashSet<>(
-                        Arrays.asList(user.getAccessLevel().name())));
-            }
-        }
-        return CredentialValidationResult.INVALID_RESULT;
+    public int priority() {
+        return 70;
+    }
 
+    @Override
+    public Set<ValidationType> validationTypes() {
+        return EnumSet.of(ValidationType.VALIDATE);
+    }
+
+    @Override
+    public Set<String> getCallerGroups(CredentialValidationResult validationResult) {
+        User user = new ArrayList<>(userRepository.getUsers().stream().filter(user1 -> user1.getLogin().equals(
+                validationResult.getCallerPrincipal().getName())).toList()).get(0);
+        return new HashSet<>(Collections.singleton(user.getAccessLevel().toString()));
+    }
+
+    public CredentialValidationResult validate(UsernamePasswordCredential credential) {
+            User user = userRepository.findUserByLogin(credential.getCaller(),
+                    credential.getPasswordAsString());
+            if (user != null && user.isActive()) {
+                return new CredentialValidationResult(user.getLogin(), new HashSet<>(Collections.singleton(user.getAccessLevel().toString())));
+            }
+        return CredentialValidationResult.INVALID_RESULT;
     }
 }
