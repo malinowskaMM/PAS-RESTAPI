@@ -35,10 +35,10 @@ public class AuthIdentityStore implements IdentityStore {
     }
 
     public CredentialValidationResult validate(UsernamePasswordCredential credential) {
-            User user = userRepository.findUserByLogin(credential.getCaller(),
-                    credential.getPasswordAsString());
+            User user = userRepository.findUserByLogin(credential.getCaller() /*loogin*/,
+                    credential.getPasswordAsString() /*pass*/);
             if (user != null && user.isActive()) {
-                return new CredentialValidationResult(user.getLogin(), new HashSet<>(Collections.singleton(user.getAccessLevel().toString())));
+                return new CredentialValidationResult(user.getLogin(), /*role*/new HashSet<>(Collections.singleton(user.getAccessLevel().toString())));
             }
         return CredentialValidationResult.INVALID_RESULT;
     }
