@@ -11,7 +11,6 @@ import pl.pas.hotel.repositoriesImplementation.UserRepository;
 
 import java.util.*;
 
-@ApplicationScoped
 public class AuthIdentityStore implements IdentityStore {
 
     @Inject
@@ -24,7 +23,7 @@ public class AuthIdentityStore implements IdentityStore {
 
     @Override
     public Set<ValidationType> validationTypes() {
-        return EnumSet.of(ValidationType.VALIDATE);
+        return EnumSet.of(ValidationType.VALIDATE, ValidationType.PROVIDE_GROUPS);
     }
 
     @Override

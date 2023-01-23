@@ -10,6 +10,7 @@ import org.json.simple.JSONObject;
 import pl.pas.hotel.auth.JwsGenerator;
 import pl.pas.hotel.exceptions.*;
 import pl.pas.hotel.model.rent.Rent;
+import pl.pas.hotel.model.room.Room;
 import pl.pas.hotel.model.user.User;
 import pl.pas.hotel.repositoriesImplementation.RentRepository;
 
@@ -91,6 +92,10 @@ public class RentManager {
     public List<Rent> getPastRentsByRoomId(UUID roomId) {
         roomManager.getRoomById(roomId);
         return getPastRents().stream().filter(rent -> rent.getRoomId().equals(roomId.toString())).toList();
+    }
+
+    public List<Room> getCurrentFreeRooms() {
+        return roomManager.getAllRooms().stream().filter(room -> getCurrentRentsByRoomId(room.getUuid()).isEmpty()).toList();
     }
 
     public List<Rent> getCurrentRentsByRoomId(UUID roomId) {

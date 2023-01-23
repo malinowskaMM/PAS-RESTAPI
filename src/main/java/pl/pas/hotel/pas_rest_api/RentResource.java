@@ -38,6 +38,14 @@ public class RentResource {
     }
 
     @GET
+    @Path("/room")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
+    public Response getFreeRooms() {
+        return Response.ok().entity(rentManager.getCurrentFreeRooms()).build();
+    }
+
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/room/{uuid}")
     @RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
