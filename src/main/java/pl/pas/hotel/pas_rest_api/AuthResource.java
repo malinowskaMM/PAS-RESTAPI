@@ -32,7 +32,7 @@ public class AuthResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"NONE"})
+    //@RolesAllowed({"NONE"})
     public Response login(@NotNull AuthDto authDto) {
         UsernamePasswordCredential usernamePasswordCredential = new UsernamePasswordCredential(authDto.getLogin(), authDto.getPassword());
             CredentialValidationResult credentialValidationResult = authIdentityStore.validate(usernamePasswordCredential);

@@ -32,7 +32,7 @@ public class RentResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
+    //@RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
     public Response getRents() {
         return Response.ok().entity(rentManager.getRents()).build();
     }
@@ -40,7 +40,7 @@ public class RentResource {
     @GET
     @Path("/room")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
+    //@RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
     public Response getFreeRooms() {
         return Response.ok().entity(rentManager.getCurrentFreeRooms()).build();
     }
@@ -48,7 +48,7 @@ public class RentResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/room/{uuid}")
-    @RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
+    //@RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
     public Response getRentsByRoom(@PathParam("uuid") UUID roomId) throws RoomWithGivenIdNotFound {
         return Response.ok().entity(rentManager.getRentsByRoomId(roomId)).build();
     }
@@ -56,7 +56,7 @@ public class RentResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/client/{login}")
-    @RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
+    //@RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
     public Response getRentsByClient(@PathParam("login") String login) throws UserWithGivenIdNotFound {
         return Response.ok().entity(rentManager.getRentsByClientId(login)).build();
     }
@@ -65,7 +65,7 @@ public class RentResource {
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/startDate")
-    @RolesAllowed({"ADMIN", "MANAGER"})
+    //@RolesAllowed({"ADMIN", "MANAGER"})
     public Response getRentsByStartDate(@QueryParam("startDate") String startDate) {
         LocalDateTime date = LocalDateTime.parse(startDate);
         return Response.ok().entity(rentManager.getRentsByStartDate(date)).build();
@@ -75,7 +75,7 @@ public class RentResource {
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/endDate")
-    @RolesAllowed({"ADMIN", "MANAGER"})
+    //RolesAllowed({"ADMIN", "MANAGER"})
     public Response getRentsByEndDate(@QueryParam("endDate") String endDate) {
         LocalDateTime date = LocalDateTime.parse(endDate);
         return Response.ok().entity(rentManager.getRentsByEndDate(date)).build();
@@ -84,7 +84,7 @@ public class RentResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/archived")
-    @RolesAllowed({"ADMIN", "MANAGER"})
+    //@RolesAllowed({"ADMIN", "MANAGER"})
     public Response getPastRents() {
         return Response.ok().entity(rentManager.getPastRents()).build();
     }
@@ -92,7 +92,7 @@ public class RentResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/current/client/{login}")
-    @RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
+    //@RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
     public Response getCurrentRentsByClientId(@PathParam("login") String login) {
         return Response.ok().entity(rentManager.getCurrentRentsByClientId(login)).build();
     }
@@ -100,7 +100,7 @@ public class RentResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/archived/client/{login}")
-    @RolesAllowed({"ADMIN", "MANAGER"})
+    //@RolesAllowed({"ADMIN", "MANAGER"})
     public Response getPastRentsByClientId(@PathParam("login") String login) {
         return Response.ok().entity(rentManager.getPastRentsByClientId(login)).build();
     }
@@ -108,7 +108,7 @@ public class RentResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/current/room/{uuid}")
-    @RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
+    //@RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
     public Response getCurrentRentsByRoomId(@PathParam("uuid") UUID roomId) {
         return Response.ok().entity(rentManager.getCurrentRentsByRoomId(roomId)).build();
     }
@@ -116,7 +116,7 @@ public class RentResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/archived/room/{uuid}")
-    @RolesAllowed({"ADMIN", "MANAGER"})
+    //@RolesAllowed({"ADMIN", "MANAGER"})
     public Response getPastRentsByRoomId(@PathParam("uuid") UUID roomId) {
         return Response.ok().entity(rentManager.getPastRentsByRoomId(roomId)).build();
     }
@@ -124,14 +124,14 @@ public class RentResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/current")
-    @RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
+    //@RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
     public Response getCurrentRents() {
         return Response.ok().entity(rentManager.getCurrentRents()).build();
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
+    //@RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
     public Response rentRoom(@Valid RentDto rentDto) throws RoomWithGivenIdNotFound, ClientWithGivenIdNotFound, RoomNotAvailable, RentValidationFailed, DateTimeValidationFailed {
         Rent rent = rentDtoMapper.toRent(rentDto);
         Rent rentResult = rentManager.rentRoom(rent.getRoomId(), rent.getBeginTime(), rent.getEndTime());
@@ -140,7 +140,7 @@ public class RentResource {
 
     @PUT
     @Path("/{uuid}")
-    @RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
+    //@RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
     public Response endRent(@PathParam("uuid") UUID rentId, @Context HttpServletRequest request) throws RentWithGivenIdNotFound, ParseException, JOSEException {
         String jws = request.getHeader("If-Match");
         if (jws == null) {
@@ -155,7 +155,7 @@ public class RentResource {
 
     @GET
     @Path("/{uuid}")
-    @RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
+    //@RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
     public Response getRent(@PathParam("uuid") UUID rentId) throws RentWithGivenIdNotFound {
         if(rentManager.getRent(rentId) == null) {
             return Response.status(404).build();
@@ -165,7 +165,7 @@ public class RentResource {
 
     @DELETE
     @Path("/{uuid}")
-    @RolesAllowed({"ADMIN", "MANAGER"})
+    //@RolesAllowed({"ADMIN", "MANAGER"})
     public Response deleteRent(@PathParam("uuid") UUID rentId) throws RentWithGivenIdNotFound {
         if(rentManager.getRent(rentId) == null) {
             return Response.status(404).build();

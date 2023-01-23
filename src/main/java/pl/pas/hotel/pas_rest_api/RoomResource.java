@@ -30,13 +30,13 @@ public class RoomResource {
     private RoomDtoMapper roomDtoMapper;
 
     @GET
-    @RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
+    //@RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRooms() {
         return Response.ok().entity(roomManager.getAllRooms()).build();
     }
 
-    @RolesAllowed({"ADMIN"})
+    //@RolesAllowed({"ADMIN"})
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createRoom(@Valid RoomDto roomDto) throws RoomValidationFailed {
@@ -47,7 +47,7 @@ public class RoomResource {
 
     @DELETE
     @Path("/{uuid}")
-    @RolesAllowed({"ADMIN"})
+    //@RolesAllowed({"ADMIN"})
     public Response deleteRoom(@PathParam("uuid") UUID roomId) throws RoomWithGivenIdNotFound {
         if(roomManager.getRoomById(roomId) == null) {
             return Response.status(404).build();
@@ -58,7 +58,7 @@ public class RoomResource {
 
     @GET
     @Path("/{uuid}")
-    @RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
+    //@RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
     public Response getRoom(@PathParam("uuid") UUID roomId) throws RoomWithGivenIdNotFound, JOSEException {
         if(roomManager.getRoomById(roomId) == null) {
             return Response.status(404).build();
@@ -69,7 +69,7 @@ public class RoomResource {
 
     @PUT
     @Path("/{uuid}")
-    @RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
+    //@RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateRoom(@PathParam("uuid") UUID roomId, RoomDto roomDto, @Context HttpServletRequest request) throws RoomWithGivenIdNotFound, ParseException, JOSEException {
         String jws = request.getHeader("If-Match");
