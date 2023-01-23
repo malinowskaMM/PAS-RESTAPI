@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 
 @ApplicationPath("/api")
 @ApplicationScoped
-//@DeclareRoles({"ADMIN", "MANAGER", "CLIENT", "NONE"})
-//@RolesAllowed({"ADMIN", "MANAGER", "CLIENT", "NONE"})
+@DeclareRoles({"ADMIN", "MANAGER", "CLIENT", "NONE"})
+@RolesAllowed({"ADMIN", "MANAGER", "CLIENT", "NONE"})
 public class HelloApplication extends Application {
 
     @Inject
