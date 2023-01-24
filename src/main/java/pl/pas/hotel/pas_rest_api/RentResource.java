@@ -10,6 +10,8 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.json.JSONObject;
+import pl.pas.hotel.auth.JwsGenerator;
 import pl.pas.hotel.dto.rent.RentDto;
 import pl.pas.hotel.dto.rent.mapper.RentDtoMapper;
 import pl.pas.hotel.exceptions.*;
@@ -29,6 +31,9 @@ public class RentResource {
 
     @Inject
     private RentDtoMapper rentDtoMapper;
+
+    @Inject
+    JwsGenerator jwsGenerator;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -156,11 +161,12 @@ public class RentResource {
     @GET
     @Path("/{uuid}")
     @RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
-    public Response getRent(@PathParam("uuid") UUID rentId) throws RentWithGivenIdNotFound {
+    public Response getRent(@PathParam("uuid") UUID rentId) throws RentWithGivenIdNotFound, JOSEException {
         if(rentManager.getRent(rentId) == null) {
             return Response.status(404).build();
         }
-        return Response.ok().entity(rentManager.getRent(rentId)).build();
+        return Response.ok().entity(rentManager.getRent(rentId))
+                .header("ETag", getJwsFromRent(rentId)).build();
     }
 
     @DELETE
@@ -172,5 +178,12 @@ public class RentResource {
         }
         rentManager.removeRent(rentId);
         return Response.ok().build();
+    }
+
+    public String getJwsFromRent(UUID id) throws NotFoundException, JOSEException {
+        Rent rent = rentManager.getRent(id);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", rent.getId().toString());
+        return this.jwsGenerator.generateJws(jsonObject.toString());
     }
 }

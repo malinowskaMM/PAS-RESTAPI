@@ -10,18 +10,24 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.json.JSONObject;
+import pl.pas.hotel.auth.JwsGenerator;
 import pl.pas.hotel.dto.room.RoomDto;
 import pl.pas.hotel.dto.room.mapper.RoomDtoMapper;
 import pl.pas.hotel.exceptions.RoomValidationFailed;
 import pl.pas.hotel.exceptions.RoomWithGivenIdNotFound;
 import pl.pas.hotel.managers.RoomManager;
 import pl.pas.hotel.model.room.Room;
+import pl.pas.hotel.model.user.User;
 
 import java.text.ParseException;
 import java.util.UUID;
 
 @Path("/rooms")
 public class RoomResource {
+
+    @Inject
+    JwsGenerator jwsGenerator;
 
     @Inject
     private RoomManager roomManager;
@@ -63,8 +69,7 @@ public class RoomResource {
         if(roomManager.getRoomById(roomId) == null) {
             return Response.status(404).build();
         }
-        String payload = roomManager.getJws(roomId);
-        return Response.ok().entity(roomManager.getRoomById(roomId)).header("ETag", payload).build();
+        return Response.ok().entity(roomManager.getRoomById(roomId)).header("ETag", getJwsFromRoom(roomId)).build();
     }
 
     @PUT
@@ -82,5 +87,12 @@ public class RoomResource {
         Room room = roomDtoMapper.toRoom(roomDto);
         roomManager.updateRoom(roomId, jws, room.getRoomNumber(), room.getPrice(), room.getRoomCapacity());
         return Response.ok().build();
+    }
+
+    public String getJwsFromRoom(UUID id) throws NotFoundException, JOSEException {
+        Room room = roomManager.getRoomById(id);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", room.getUuid().toString());
+        return this.jwsGenerator.generateJws(jsonObject.toString());
     }
 }

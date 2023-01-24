@@ -1,9 +1,7 @@
 package pl.pas.hotel.pas_rest_api;
 
 import com.nimbusds.jose.JOSEException;
-import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -12,6 +10,8 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.json.JSONObject;
+import pl.pas.hotel.auth.JwsGenerator;
 import pl.pas.hotel.dto.auth.PasswordChangeDto;
 import pl.pas.hotel.dto.user.AdminDto;
 import pl.pas.hotel.dto.user.ClientDto;
@@ -19,6 +19,8 @@ import pl.pas.hotel.dto.user.ManagerDto;
 import pl.pas.hotel.dto.user.mapper.UserDtoMapper;
 import pl.pas.hotel.exceptions.*;
 import pl.pas.hotel.managers.UserManager;
+import pl.pas.hotel.model.rent.Rent;
+import pl.pas.hotel.model.user.User;
 import pl.pas.hotel.model.user.admin.Admin;
 import pl.pas.hotel.model.user.client.Client;
 import pl.pas.hotel.model.user.manager.Manager;
@@ -34,6 +36,9 @@ public class UserResource {
 
     @Inject
     UserDtoMapper userDtoMapper;
+
+    @Inject
+    JwsGenerator jwsGenerator;
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
@@ -154,11 +159,12 @@ public class UserResource {
     @GET
     @Path("/{uuid}")
     @RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
-    public Response getUser(@PathParam("uuid") UUID userId) throws UserWithGivenIdNotFound {
+    public Response getUser(@PathParam("uuid") UUID userId) throws UserWithGivenIdNotFound, JOSEException {
         if (userManager.getUserById(userId) == null) {
             return Response.status(404).build();
         }
-        return Response.ok().entity(userManager.getUserById(userId)).build();
+        return Response.ok().entity(userManager.getUserById(userId))
+                .header("ETag", getJwsFromUser(userId)).build();
     }
 
     @GET
@@ -201,5 +207,11 @@ public class UserResource {
         return Response.ok().build();
     }
 
+    public String getJwsFromUser(UUID id) throws NotFoundException, JOSEException {
+        User user = userManager.getUserById(id);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", user.getUuid().toString());
+        return this.jwsGenerator.generateJws(jsonObject.toString());
+    }
 }
 
