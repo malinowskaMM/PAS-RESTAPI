@@ -70,7 +70,7 @@ public class UserManager {
         } else {
             if (this.jwsGenerator.verify(jws)) {
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("uuid", user.getUuid());
+                jsonObject.put("uuid", user.getUuid().toString());
                 String newJwt = this.jwsGenerator.generateJws(jsonObject.toString());
                 if(newJwt.equals(jws)) {
                     userRepository.modifyUser(id, login, password, accessLevel ,firstName, lastName, address);
@@ -110,7 +110,7 @@ public class UserManager {
     public void activateUser(UUID id, String jws) throws UserWithGivenIdNotFound, JOSEException, ParseException {
         if (this.jwsGenerator.verify(jws)) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("uuid", id);
+            jsonObject.put("uuid", getUserById(id).getUuid().toString());
             String newJwt = this.jwsGenerator.generateJws(jsonObject.toString());
             if(newJwt.equals(jws)) {
                 userRepository.activateUser(getUserById(id).getUuid());
@@ -121,7 +121,7 @@ public class UserManager {
     public void deactivateUser(UUID id, String jws) throws UserWithGivenIdNotFound, JOSEException, ParseException {
         if (this.jwsGenerator.verify(jws)) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("uuid", id);
+            jsonObject.put("uuid", getUserById(id).getUuid().toString());
             String newJwt = this.jwsGenerator.generateJws(jsonObject.toString());
             if(newJwt.equals(jws)) {
                 userRepository.deactivateUser(getUserById(id).getUuid());

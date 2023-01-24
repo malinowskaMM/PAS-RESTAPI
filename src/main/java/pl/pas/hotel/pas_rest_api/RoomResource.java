@@ -92,7 +92,7 @@ public class RoomResource {
     public String getJwsFromRoom(UUID id) throws NotFoundException, JOSEException {
         Room room = roomManager.getRoomById(id);
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", room.getUuid().toString());
+        jsonObject.put("uuid", room.getUuid().toString());
         return this.jwsGenerator.generateJws(jsonObject.toString());
     }
 }

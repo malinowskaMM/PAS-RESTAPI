@@ -57,7 +57,7 @@ public class RentManager {
         if(rent != null) {
             if (this.jwsGenerator.verify(jws)) {
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("id", rent.getId());
+                jsonObject.put("id", rent.getId().toString());
                 String newJwt = this.jwsGenerator.generateJws(jsonObject.toString());
                 if (newJwt.equals(jws)) {
                     rentRepository.endRent(id);

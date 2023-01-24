@@ -57,7 +57,7 @@ public class RoomManager {
         } else {
             if (this.jwsGenerator.verify(jws)) {
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("uuid", room1.getUuid());
+                jsonObject.put("uuid", room1.getUuid().toString());
                 String newJwt = this.jwsGenerator.generateJws(jsonObject.toString());
                 if(newJwt.equals(jws)) {
                     roomRepository.modifyRoom(room1.getUuid(), roomNumber, basePrice, roomCapacity);
