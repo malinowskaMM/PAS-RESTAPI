@@ -208,7 +208,7 @@ public class UserResource {
     }
 
     public String getJwsFromUser(UUID id) throws NotFoundException, JOSEException {
-        User user = userManager.getUserById(id);
+        User user = userManager.getUserByIdInside(id);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("uuid", user.getUuid().toString());
         return this.jwsGenerator.generateJws(jsonObject.toString());

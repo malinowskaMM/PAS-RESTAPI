@@ -1,9 +1,6 @@
 package pl.pas.hotel.dto.user.mapper;
 
-import pl.pas.hotel.dto.user.AdminDto;
-import pl.pas.hotel.dto.user.ClientDto;
-import pl.pas.hotel.dto.user.ManagerDto;
-import pl.pas.hotel.dto.user.UserDto;
+import pl.pas.hotel.dto.user.*;
 import pl.pas.hotel.model.user.AccessLevel;
 import pl.pas.hotel.model.user.User;
 import pl.pas.hotel.model.user.admin.Admin;
@@ -22,6 +19,10 @@ public class UserDtoMapper {
             return new Client(((ClientDto) userDto).getPersonalId(), ((ClientDto) userDto).getFirstName(), ((ClientDto) userDto).getLastName(), ((ClientDto) userDto).getAddress(), userDto.getLogin(), userDto.getPassword(), AccessLevel.valueOf(userDto.getAccessLevel()));
         }
         return null;
+    }
+
+    public static ShowUserDto toShowUserDto(User user) {
+        return new ShowUserDto(user.getUuid() ,user.getLogin(), user.getAccessLevel().getAccessLevel());
     }
 
 }

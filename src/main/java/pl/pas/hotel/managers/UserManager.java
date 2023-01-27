@@ -9,6 +9,9 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.SecurityContext;
 import org.json.simple.JSONObject;
 import pl.pas.hotel.auth.JwsGenerator;
+import pl.pas.hotel.dto.user.ShowUserDto;
+import pl.pas.hotel.dto.user.UserDto;
+import pl.pas.hotel.dto.user.mapper.UserDtoMapper;
 import pl.pas.hotel.exceptions.*;
 import pl.pas.hotel.model.user.AccessLevel;
 import pl.pas.hotel.model.user.User;
@@ -87,7 +90,15 @@ public class UserManager {
             return client;
     }
 
-    public User getUserById(UUID id) throws UserWithGivenIdNotFound {
+    public ShowUserDto getUserById(UUID id) throws UserWithGivenIdNotFound {
+        final User user = userRepository.getUserById(id);
+        if (user == null) {
+            throw new UserWithGivenIdNotFound("Not found user with given id");
+        }
+        return UserDtoMapper.toShowUserDto(user);
+    }
+
+    public User getUserByIdInside(UUID id) throws UserWithGivenIdNotFound {
         final User user = userRepository.getUserById(id);
         if (user == null) {
             throw new UserWithGivenIdNotFound("Not found user with given id");
@@ -95,25 +106,25 @@ public class UserManager {
         return user;
     }
 
-    public List<User> findClientsByLoginPart(String login) {
+    public List<ShowUserDto> findClientsByLoginPart(String login) {
         return findClients(user -> user.getLogin().contains(login));
     }
 
-    public User findUserByLogin(String login, String password) {
-        return userRepository.findUserByLogin(login, password);
+    public ShowUserDto findUserByLogin(String login, String password) {
+        return UserDtoMapper.toShowUserDto(userRepository.findUserByLogin(login, password));
     }
 
-    public List<User> findClients(Predicate<User> predicate) {
-        return userRepository.getUsersBy(predicate);
+    public List<ShowUserDto> findClients(Predicate<User> predicate) {
+        return userRepository.getUsersBy(predicate).stream().map(UserDtoMapper::toShowUserDto).toList();
     }
 
     public void activateUser(UUID id, String jws) throws UserWithGivenIdNotFound, JOSEException, ParseException {
         if (this.jwsGenerator.verify(jws)) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("uuid", getUserById(id).getUuid().toString());
+            jsonObject.put("uuid", getUserByIdInside(id).getUuid().toString());
             String newJwt = this.jwsGenerator.generateJws(jsonObject.toString());
             if(newJwt.equals(jws)) {
-                userRepository.activateUser(getUserById(id).getUuid());
+                userRepository.activateUser(getUserByIdInside(id).getUuid());
             }
         }
     }
@@ -121,24 +132,28 @@ public class UserManager {
     public void deactivateUser(UUID id, String jws) throws UserWithGivenIdNotFound, JOSEException, ParseException {
         if (this.jwsGenerator.verify(jws)) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("uuid", getUserById(id).getUuid().toString());
+            jsonObject.put("uuid", getUserByIdInside(id).getUuid().toString());
             String newJwt = this.jwsGenerator.generateJws(jsonObject.toString());
             if(newJwt.equals(jws)) {
-                userRepository.deactivateUser(getUserById(id).getUuid());
+                userRepository.deactivateUser(getUserByIdInside(id).getUuid());
             }
         }
     }
 
-    public List<User> getAllUsers(){
+    public List<ShowUserDto> getAllUsers(){
+        return userRepository.getUsers().stream().map(UserDtoMapper::toShowUserDto).toList();
+    }
+
+    public List<User> getAllUsersInside(){
         return userRepository.getUsers();
     }
 
     public void deleteUser(UUID id) throws UserWithGivenIdNotFound {
-        userRepository.deleteUser(getUserById(id).getUuid());
+        userRepository.deleteUser(getUserByIdInside(id).getUuid());
     }
 
     public boolean changePassword(String oldPassword, String newPassword) {
-        User user = getAllUsers().stream().filter(user1 -> user1.getLogin().equals(securityContext.getUserPrincipal().getName())).findFirst().orElse(null);
+        User user = getAllUsersInside().stream().filter(user1 -> user1.getLogin().equals(securityContext.getUserPrincipal().getName())).findFirst().orElse(null);
         if(user != null && !oldPassword.equals(newPassword)) {
             user.setPassword(newPassword);
             return true;
@@ -150,7 +165,7 @@ public class UserManager {
     }
 
     public User getUserFromServerContext() {
-        return this.getAllUsers().stream().filter(user -> user.getLogin().equals(securityContext.getUserPrincipal().getName())).toList().get(0);
+        return this.getAllUsersInside().stream().filter(user -> user.getLogin().equals(securityContext.getUserPrincipal().getName())).toList().get(0);
     }
 
 }

@@ -28,7 +28,7 @@ public class RentDtoMapper {
         // Client client = userManager.getClientById(UUID.fromString(rentDto.getClientId()));
         // Room room = roomManager.getRoomById(UUID.fromString(rentDto.getRoomId()));
 
-        User client = userManager.getAllUsers().stream().filter(user -> user.getLogin().equals(rentDto.getLogin())).toList().get(0);
+        User client = userManager.getAllUsersInside().stream().filter(user -> user.getLogin().equals(rentDto.getLogin())).toList().get(0);
         return new Rent(rentDto.getBeginTime(), rentDto.getEndTime(), client.getUuid().toString() ,rentDto.getRoomId());
     }
 

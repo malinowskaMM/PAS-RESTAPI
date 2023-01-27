@@ -39,7 +39,7 @@ public class RentManager {
         if (user != null && validator.validate(roomId).isEmpty()) {
             if (beginTime.isBefore(endTime)) {
                     final List<Rent> rents = rentRepository.getCurrentRentsByRoom(UUID.fromString(roomId), beginTime, endTime);
-                    if (rents.isEmpty() && userManager.getUserById(user.getUuid()).isActive()) {
+                    if (rents.isEmpty() && userManager.getUserByIdInside(user.getUuid()).isActive()) {
                         return rentRepository.createRent(beginTime, endTime, user.getLogin(), roomId);
                     } else {
                         throw new RoomNotAvailable("Room is not available");
