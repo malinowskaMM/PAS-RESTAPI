@@ -131,7 +131,7 @@ public class UserResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"ADMIN", "MANAGER", "CLIENT", "NONE"})
+    @RolesAllowed({"ADMIN", "MANAGER"})
     public Response getUsers() {
         return Response.ok().entity(userManager.getAllUsers()).build();
     }
@@ -158,7 +158,7 @@ public class UserResource {
 
     @GET
     @Path("/{uuid}")
-    @RolesAllowed({"ADMIN", "MANAGER", "CLIENT"})
+    @RolesAllowed({"ADMIN", "MANAGER"})
     public Response getUser(@PathParam("uuid") UUID userId) throws UserWithGivenIdNotFound, JOSEException {
         if (userManager.getUserById(userId) == null) {
             return Response.status(404).build();
